@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import type { MouseEvent as ReactMouseEvent } from 'react'
 import { desktopIcons, type DesktopIconEntry } from '../config/shell'
 import { useWindowsStore } from '../core/store/windows'
@@ -19,6 +19,10 @@ export default function DesktopIcons({ onMenu }: Props) {
   const iconSize = useSystemStore((s) => s.desktopIconSize)
   const openApp = useWindowsStore((s) => s.openApp)
   const [selected, setSelected] = useState<string | null>(null)
+  // Detect double-press manually: `dblclick` can be suppressed when the
+  // element's animated state changes between presses, and is unreliable
+  // on touch — two rapid `click`s on the same icon always arrive.
+  const lastTap = useRef<{ id: string; t: number }>({ id: '', t: 0 })
   const sz = SIZES[iconSize]
 
   return (
@@ -40,9 +44,14 @@ export default function DesktopIcons({ onMenu }: Props) {
             e.stopPropagation()
             setSelected(d.id)
           }}
-          onDoubleClick={() =>
-            openApp(d.appId, { launch: d.launch, title: d.title })
-          }
+          onClick={() => {
+            const now = performance.now()
+            const last = lastTap.current
+            lastTap.current = { id: d.id, t: now }
+            if (last.id === d.id && now - last.t < 500) {
+              openApp(d.appId, { launch: d.launch, title: d.title })
+            }
+          }}
           onContextMenu={(e) => {
             e.stopPropagation()
             setSelected(d.id)
