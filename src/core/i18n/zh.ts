@@ -141,7 +141,7 @@ export const zh: Messages = {
   'toast.later': '暂不执行',
 
   /* ---- App titles ---- */
-  'app.explorer': '文件资源管理器',
+  'app.explorer': '文件',
   'app.edge': 'Microsoft Edge',
   'app.notepad': '记事本',
   'app.calculator': '计算器',

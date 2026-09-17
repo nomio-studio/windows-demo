@@ -144,7 +144,7 @@ export const en = {
   'toast.later': 'Not now',
 
   /* ---- App titles ---- */
-  'app.explorer': 'File Explorer',
+  'app.explorer': 'Files',
   'app.edge': 'Microsoft Edge',
   'app.notepad': 'Notepad',
   'app.calculator': 'Calculator',

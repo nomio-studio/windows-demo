@@ -33,10 +33,13 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* zh-CN: keep Segoe UI for Latin, fall back to the platform's hanzi UI
-   font — same pairing Windows itself uses. */
+/* zh-CN: MiSans webfont (lazy-loaded on locale switch — see
+   core/i18n) with the platform hanzi UI fonts as fallback. MiSans
+   leads the stack so Latin renders in the same face, matching zh
+   Windows where the UI font draws Latin text too. */
 html[lang^='zh'] body {
   font-family:
+    "MiSans",
     "Segoe UI",
     "Segoe UI Variable",
     "Microsoft YaHei",
@@ -47,6 +50,56 @@ html[lang^='zh'] body {
     "Helvetica Neue",
     Arial,
     sans-serif;
+}
+
+/* MiSans ships non-Regular weights as separate families declared at
+   weight 400 — remap the weight utilities to the matching family.
+   Regular (400) and Bold (700) live in "MiSans" itself, so
+   font-normal/bold/extrabold need no override. */
+html[lang^='zh'] .font-thin,
+html[lang^='zh'] .font-extralight {
+  font-family:
+    "MiSans ExtraLight",
+    "MiSans",
+    "Segoe UI",
+    "Microsoft YaHei",
+    "PingFang SC",
+    "Noto Sans CJK SC",
+    sans-serif;
+  font-weight: 400;
+}
+html[lang^='zh'] .font-light {
+  font-family:
+    "MiSans Light",
+    "MiSans",
+    "Segoe UI",
+    "Microsoft YaHei",
+    "PingFang SC",
+    "Noto Sans CJK SC",
+    sans-serif;
+  font-weight: 400;
+}
+html[lang^='zh'] .font-medium {
+  font-family:
+    "MiSans Medium",
+    "MiSans",
+    "Segoe UI",
+    "Microsoft YaHei",
+    "PingFang SC",
+    "Noto Sans CJK SC",
+    sans-serif;
+  font-weight: 400;
+}
+html[lang^='zh'] .font-semibold {
+  font-family:
+    "MiSans Semibold",
+    "MiSans",
+    "Segoe UI",
+    "Microsoft YaHei",
+    "PingFang SC",
+    "Noto Sans CJK SC",
+    sans-serif;
+  font-weight: 400;
 }
 
 /* Desktop-style UI: no text selection, callouts or tap-zoom delay

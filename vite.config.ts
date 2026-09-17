@@ -42,7 +42,7 @@ export default defineConfig({
         ],
         shortcuts: [
           {
-            name: 'File Explorer',
+            name: 'Files',
             url: './?app=explorer',
             icons: [icon('icons/icon-192.png', '192x192')],
           },
@@ -72,6 +72,22 @@ export default defineConfig({
       workbox: {
         // Precache every emitted asset — the whole OS works offline.
         globPatterns: ['**/*.{js,css,html,svg,png,ico,webmanifest}'],
+        // MiSans CDN is version-pinned + immutable — cache it so the zh
+        // font keeps working offline after first load.
+        runtimeCaching: [
+          {
+            urlPattern: /^https:\/\/cdn\.jsdelivr\.net\/npm\/misans-webfont/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'misans-fonts',
+              expiration: {
+                maxEntries: 300,
+                maxAgeSeconds: 60 * 60 * 24 * 365,
+              },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
+        ],
       },
     }),
   ],

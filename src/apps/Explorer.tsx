@@ -28,7 +28,7 @@ const RIBBON: [string, boolean][] = [
   ['exp.rib.properties', false],
 ]
 
-/** File Explorer with nav pane, breadcrumb bar, details view, status bar. */
+/** Files app: nav pane, breadcrumb bar, details view, status bar. */
 export default function ExplorerApp({ launch }: AppProps) {
   const initial = (launch as { path?: string[] } | undefined)?.path ?? [
     'Quick access',

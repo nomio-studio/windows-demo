@@ -29,6 +29,27 @@ const dicts: Record<Locale, Record<string, string>> = { en, 'zh-CN': zh }
 
 const STORAGE_KEY = 'win10.locale'
 
+/**
+ * MiSans webfont, served as unicode-range-sliced woff2 from the
+ * jsDelivr mirror (`misans-webfont`). Weights beyond Regular/Bold ship
+ * as separate families ('MiSans Medium', …) — index.css remaps the
+ * weight utilities onto them. Loaded lazily so English sessions never
+ * download the font CSS.
+ */
+const MISANS_BASE =
+  'https://cdn.jsdelivr.net/npm/misans-webfont@4.3.1/misans'
+let misansLoaded = false
+function ensureMiSans() {
+  if (misansLoaded || typeof document === 'undefined') return
+  misansLoaded = true
+  for (const w of ['extralight', 'light', 'regular', 'medium', 'semibold']) {
+    const link = document.createElement('link')
+    link.rel = 'stylesheet'
+    link.href = `${MISANS_BASE}/misans-${w}/result.min.css`
+    document.head.append(link)
+  }
+}
+
 function detect(): Locale {
   try {
     const saved = localStorage.getItem(STORAGE_KEY)
@@ -52,9 +73,12 @@ export const useI18n = create<I18nStore>()((set) => ({
     } catch {
       // Private mode etc. — session-only locale is fine.
     }
+    if (locale.startsWith('zh')) ensureMiSans()
     set({ locale })
   },
 }))
+
+if (useI18n.getState().locale.startsWith('zh')) ensureMiSans()
 
 /** Current display language, for date/number formatting. */
 export function useLocale(): Locale {
