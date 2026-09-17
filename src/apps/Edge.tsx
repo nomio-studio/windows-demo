@@ -1,4 +1,3 @@
-import type { AppProps } from '../core/types'
 import {
   BackIcon,
   CloseIcon,
@@ -30,7 +29,7 @@ const NEWS = [
 ]
 
 /** Microsoft Edge: chrome toolbar + new-tab style start page. */
-export default function EdgeApp(_props: AppProps) {
+export default function EdgeApp() {
   const navBtn =
     'flex h-7 w-7 items-center justify-center text-[#444] hover:bg-[#e5e5e5] disabled:text-[#b8b8b8]'
 

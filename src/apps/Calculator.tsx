@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import type { AppProps } from '../core/types'
 
 type Op = '+' | '−' | '×' | '÷'
 
@@ -31,7 +30,7 @@ const fmt = (n: number) => {
 }
 
 /** Windows 10 standard calculator (fully functional). */
-export default function CalculatorApp(_props: AppProps) {
+export default function CalculatorApp() {
   const [s, setS] = useState<Calc>({
     cur: '0',
     acc: null,
