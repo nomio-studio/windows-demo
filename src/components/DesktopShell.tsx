@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import type { MouseEvent as ReactMouseEvent } from 'react'
 import { useEscape } from '../core/hooks'
 import { useT } from '../core/i18n'
+import { useFsStore } from '../core/fs/store'
+import { DESKTOP_UI, TEXT_EXTS, extOf, type FsNode } from '../core/fs/tree'
 import { usePwaStore } from '../core/store/pwa'
 import {
   useSystemStore,
@@ -13,7 +15,8 @@ import type { DesktopIconEntry } from '../config/shell'
 import ActionCenter from './ActionCenter'
 import CalendarFlyout from './CalendarFlyout'
 import ContextMenu from './ContextMenu'
-import DesktopIcons from './DesktopIcons'
+import DesktopIcons, { type IconActions } from './DesktopIcons'
+import FilePropertiesDialog from './FilePropertiesDialog'
 import SearchFlyout from './SearchFlyout'
 import StartMenu from './StartMenu'
 import Taskbar from './Taskbar'
@@ -45,7 +48,13 @@ export default function DesktopShell() {
   const brightness = useSystemStore((s) => s.brightness)
   const pendingFile = usePwaStore((s) => s.pendingFile)
   const setPendingFile = usePwaStore((s) => s.setPendingFile)
+  const fs = useFsStore()
+  const binCount = useFsStore((s) => s.roots['Recycle Bin']?.children?.length ?? 0)
   const [menu, setMenu] = useState<MenuState | null>(null)
+  const [propsNode, setPropsNode] = useState<{
+    node: FsNode
+    uiPath: string[]
+  } | null>(null)
   const t = useT()
 
   const openMenu = (e: ReactMouseEvent, items: ContextMenuItem[]) => {
@@ -116,26 +125,92 @@ export default function DesktopShell() {
         checked: i === 0,
       })),
     },
-    { label: t('menu.refresh') },
+    { label: t('menu.refresh'), onClick: () => fs.refresh() },
     { type: 'separator' },
-    { label: t('menu.paste'), disabled: true },
+    {
+      label: t('exp.ctx.paste'),
+      disabled: !fs.clipboard,
+      onClick: () => fs.paste(DESKTOP_UI),
+    },
     { label: t('menu.pasteShortcut'), disabled: true },
+    { type: 'separator' },
+    {
+      label: t('exp.ctx.new'),
+      submenu: [
+        {
+          label: t('exp.new.folder'),
+          onClick: () => fs.createFolder(DESKTOP_UI, t('fs.newFolder')),
+        },
+        {
+          label: t('exp.new.text'),
+          onClick: () => fs.createFile(DESKTOP_UI, t('fs.newTextDoc')),
+        },
+      ],
+    },
     { type: 'separator' },
     { label: t('menu.displaySettings'), onClick: () => openSettings('system') },
     { label: t('menu.personalize'), onClick: () => openSettings('personalization') },
   ]
 
-  const iconMenu = (entry: DesktopIconEntry): ContextMenuItem[] => [
-    {
-      label: t('menu.open'),
-      onClick: () => openApp(entry.appId, { launch: entry.launch, title: entry.title }),
-    },
-    { type: 'separator' },
-    { label: t('menu.pinStart') },
-    { label: t('menu.pinTaskbar') },
-    { type: 'separator' },
-    { label: t('menu.properties') },
-  ]
+  const iconMenu = (
+    entry: DesktopIconEntry,
+    actions: IconActions,
+  ): ContextMenuItem[] => {
+    // Real file/folder icons get filesystem operations.
+    if (entry.fs) {
+      const n = entry.fs
+      const p = [...DESKTOP_UI, n.name]
+      const openable =
+        n.kind !== 'file' || TEXT_EXTS.has(extOf(n.name))
+      return [
+        {
+          label: t('menu.open'),
+          onClick: () =>
+            openApp(entry.appId, { launch: entry.launch, title: entry.title }),
+          disabled: !openable,
+        },
+        { type: 'separator' },
+        {
+          label: t('exp.ctx.cut'),
+          onClick: () => fs.copyPaths([p], true),
+        },
+        {
+          label: t('exp.ctx.copy'),
+          onClick: () => fs.copyPaths([p], false),
+        },
+        { type: 'separator' },
+        { label: t('exp.ctx.delete'), onClick: () => fs.remove(p) },
+        {
+          label: t('exp.ctx.rename'),
+          onClick: () => actions.startRename(entry.id),
+        },
+        { type: 'separator' },
+        {
+          label: t('exp.ctx.properties'),
+          onClick: () => setPropsNode({ node: n, uiPath: DESKTOP_UI }),
+        },
+      ]
+    }
+    const items: ContextMenuItem[] = [
+      {
+        label: t('menu.open'),
+        onClick: () =>
+          openApp(entry.appId, { launch: entry.launch, title: entry.title }),
+      },
+      { type: 'separator' },
+      { label: t('menu.pinStart') },
+      { label: t('menu.pinTaskbar') },
+      { type: 'separator' },
+    ]
+    if (entry.id === 'bin')
+      items.push({
+        label: t('exp.bin.empty'),
+        disabled: binCount === 0,
+        onClick: () => fs.emptyBin(),
+      })
+    items.push({ label: t('menu.properties') })
+    return items
+  }
 
   const taskbarMenu = (): ContextMenuItem[] => [
     {
@@ -155,7 +230,7 @@ export default function DesktopShell() {
     { type: 'separator' },
     {
       label: t('app.taskmgr'),
-      onClick: () => openApp('modern', { title: 'app.taskmgr' }),
+      onClick: () => openApp('taskmgr'),
     },
     { type: 'separator' },
     { label: t('menu.lockTaskbar'), checked: true },
@@ -171,7 +246,7 @@ export default function DesktopShell() {
     { label: t('winx.netConnections') },
     { label: t('winx.diskMgmt') },
     { type: 'separator' },
-    { label: t('app.taskmgr'), onClick: () => openApp('modern', { title: 'app.taskmgr' }) },
+    { label: t('app.taskmgr'), onClick: () => openApp('taskmgr') },
     { label: t('app.settings'), onClick: () => openApp('settings') },
     { type: 'separator' },
     { label: t('app.explorer'), onClick: () => openApp('explorer') },
@@ -194,7 +269,9 @@ export default function DesktopShell() {
     <div id="shell" className="anim-fade relative h-full w-full overflow-hidden">
       <Wallpaper />
       <DesktopIcons
-        onMenu={(e, entry) => openMenu(e, entry ? iconMenu(entry) : desktopMenu())}
+        onMenu={(e, entry, actions) =>
+          openMenu(e, entry ? iconMenu(entry, actions) : desktopMenu())
+        }
       />
 
       {windows.map((w) => (
@@ -227,6 +304,14 @@ export default function DesktopShell() {
 
       {menu && (
         <ContextMenu x={menu.x} y={menu.y} items={menu.items} onClose={() => setMenu(null)} />
+      )}
+
+      {propsNode && (
+        <FilePropertiesDialog
+          node={propsNode.node}
+          uiPath={propsNode.uiPath}
+          onClose={() => setPropsNode(null)}
+        />
       )}
 
       {/* Brightness veil */}

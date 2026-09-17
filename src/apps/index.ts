@@ -6,6 +6,7 @@ import ExplorerApp from './Explorer'
 import ModernApp from './ModernApp'
 import NotepadApp from './Notepad'
 import SettingsApp from './Settings'
+import TaskManagerApp from './TaskManager'
 import {
   AppsIcon,
   CalculatorIcon,
@@ -21,6 +22,7 @@ import {
   PhotosIcon,
   SettingsIcon,
   StoreIcon,
+  TaskMgrIcon,
   WeatherIcon,
   XboxIcon,
 } from '../components/icons'
@@ -73,6 +75,15 @@ export function registerApps(): void {
     component: SettingsApp,
     defaultSize: { width: 900, height: 600 },
     minSize: { width: 560, height: 400 },
+    singleInstance: true,
+  })
+  registerApp({
+    id: 'taskmgr',
+    title: 'app.taskmgr',
+    icon: TaskMgrIcon,
+    component: TaskManagerApp,
+    defaultSize: { width: 640, height: 440 },
+    minSize: { width: 420, height: 300 },
     singleInstance: true,
   })
 

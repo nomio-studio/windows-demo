@@ -48,6 +48,11 @@ export interface WindowState {
    *  `title` may be a message key or a literal (resolved by `t()`). */
   title?: string
   icon?: IconType
+  /**
+   * Apps may veto a close (e.g. Notepad's unsaved-changes prompt).
+   * Return false to keep the window open.
+   */
+  closeGuard?: () => boolean
   bounds: Rect
   prevBounds: Rect | null
   z: number

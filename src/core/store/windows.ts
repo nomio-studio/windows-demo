@@ -36,6 +36,10 @@ interface WindowsStore {
   topZ: number
   openApp: (appId: string, opts?: OpenOptions) => void
   closeWindow: (id: string) => void
+  /** Close unless the app's closeGuard vetoes it (unsaved changes). */
+  requestClose: (id: string) => void
+  setTitle: (id: string, title: string) => void
+  setCloseGuard: (id: string, fn?: () => boolean) => void
   focusWindow: (id: string) => void
   minimizeWindow: (id: string) => void
   /** Taskbar-button behaviour: focus, restore, or minimize if focused. */
@@ -110,6 +114,25 @@ export const useWindowsStore = create<WindowsStore>()((set, get) => ({
           : s.activeId
       return { windows, activeId }
     }),
+
+  requestClose: (id) => {
+    const s = get()
+    const w = s.windows.find((x) => x.id === id)
+    if (w?.closeGuard && w.closeGuard() === false) return
+    s.closeWindow(id)
+  },
+
+  setTitle: (id, title) =>
+    set((s) => ({
+      windows: s.windows.map((w) => (w.id === id ? { ...w, title } : w)),
+    })),
+
+  setCloseGuard: (id, fn) =>
+    set((s) => ({
+      windows: s.windows.map((w) =>
+        w.id === id ? { ...w, closeGuard: fn } : w,
+      ),
+    })),
 
   focusWindow: (id) =>
     set((s) => ({

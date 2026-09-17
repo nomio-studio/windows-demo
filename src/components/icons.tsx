@@ -3,13 +3,16 @@ import {
   Accessibility24Regular,
   Airplane24Regular,
   Apps24Regular,
+  AppsListDetailRegular,
   ArrowClockwise16Regular,
   ArrowLeft16Regular,
   ArrowRight16Regular,
   ArrowSync24Regular,
+  ArrowUndo16Regular,
   ArrowUp16Regular,
   Battery924Regular,
   BinRecycle24Filled,
+  BinRecycleFull24Filled,
   Bluetooth24Regular,
   BrightnessHigh24Regular,
   Calculator24Filled,
@@ -19,21 +22,29 @@ import {
   ChevronDown16Regular,
   ChevronRight16Regular,
   ChevronUp16Regular,
+  ClipboardPaste16Regular,
   Clock24Regular,
   Cloud24Color,
   CommentText24Regular,
+  Copy16Regular,
+  Cut16Regular,
+  Delete16Regular,
   Desktop24Filled,
   Desktop24Regular,
   Dismiss16Regular,
   Document24Color,
+  DocumentAdd16Regular,
   DocumentText24Color,
   Folder24Filled,
+  FolderAdd16Regular,
   Games24Regular,
   Globe24Regular,
+  Grid16Regular,
   HardDrive24Filled,
   Home16Regular,
   Image24Color,
   Image24Filled,
+  Info16Regular,
   LineHorizontal116Regular,
   Location24Regular,
   LockClosed16Regular,
@@ -49,7 +60,9 @@ import {
   PersonCircleFilled,
   PhoneDesktop24Regular,
   Pin16Regular,
+  PinOff16Regular,
   Power24Regular,
+  Rename16Regular,
   Search24Regular,
   Settings24Color,
   Shield24Color,
@@ -62,6 +75,8 @@ import {
   Star16Color,
   Sticker24Filled,
   Tablet24Regular,
+  TaskListLtr24Regular,
+  TextAddRegular,
   VideoClip24Filled,
   WeatherMoon24Regular,
   WeatherPartlyCloudyDay24Filled,
@@ -173,6 +188,23 @@ export const NetworkIcon: IconType = Globe24Regular
 export const EaseIcon: IconType = Accessibility24Regular
 export const PrivacyIcon: IconType = ShieldKeyhole24Regular
 
+/* ---- File-operation glyphs (Explorer / dialogs / desktop menus) ---- */
+
+export const CutIcon: IconType = Cut16Regular
+export const CopyIcon: IconType = Copy16Regular
+export const PasteIcon: IconType = ClipboardPaste16Regular
+export const DeleteIcon: IconType = Delete16Regular
+export const RenameIcon: IconType = Rename16Regular
+export const InfoIcon: IconType = Info16Regular
+export const PinOffIcon: IconType = PinOff16Regular
+export const NewFolderIcon: IconType = FolderAdd16Regular
+export const NewFileIcon: IconType = DocumentAdd16Regular
+export const TextAddIcon: IconType = TextAddRegular
+export const UndoIcon: IconType = ArrowUndo16Regular
+export const GridIcon: IconType = Grid16Regular
+export const DetailsIcon: IconType = AppsListDetailRegular
+export const TaskMgrIcon: IconType = TaskListLtr24Regular
+
 /* ---- Coloured app icons (intrinsic fill, like real Win32 icons) ---- */
 
 export const SettingsIcon: IconType = Settings24Color
@@ -187,6 +219,7 @@ export const PaintIcon: IconType = PaintBrush24Color
 export const FolderIcon: IconType = F(Folder24Filled, '#F4B400')
 export const ThisPCIcon: IconType = F(Desktop24Filled, '#3E9BE8')
 export const RecycleBinIcon: IconType = F(BinRecycle24Filled, '#5B9BD5')
+export const RecycleBinFullIcon: IconType = F(BinRecycleFull24Filled, '#5B9BD5')
 export const CalculatorIcon: IconType = F(Calculator24Filled, '#3F3F3F')
 export const DriveIcon: IconType = F(HardDrive24Filled, '#4A90C4')
 export const StickyNoteIcon: IconType = F(Sticker24Filled, '#FFD54F')

@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
 import type { IconType } from '../types'
 
 /** Mutually-exclusive shell panels. */
@@ -60,9 +61,11 @@ interface SystemStore {
   setWallpaper: (i: number) => void
 }
 
-export const useSystemStore = create<SystemStore>()((set) => ({
-  phase: 'boot',
-  setPhase: (phase) => set({ phase, flyout: null }),
+export const useSystemStore = create<SystemStore>()(
+  persist(
+    (set) => ({
+      phase: 'boot',
+      setPhase: (phase) => set({ phase, flyout: null }),
 
   flyout: null,
   setFlyout: (flyout) => set({ flyout }),
@@ -95,4 +98,18 @@ export const useSystemStore = create<SystemStore>()((set) => ({
 
   wallpaper: 0,
   setWallpaper: (wallpaper) => set({ wallpaper }),
-}))
+    }),
+    {
+      name: 'win10.prefs',
+      // Only user preferences persist — session/phase state always resets.
+      partialize: (s) => ({
+        brightness: s.brightness,
+        volume: s.volume,
+        wifiOn: s.wifiOn,
+        quickActions: s.quickActions,
+        desktopIconSize: s.desktopIconSize,
+        wallpaper: s.wallpaper,
+      }),
+    },
+  ),
+)

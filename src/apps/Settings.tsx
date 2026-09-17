@@ -1,6 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { LOCALES, useI18n, useT } from '../core/i18n'
 import type { MessageKey } from '../core/i18n/en'
+import { formatSize } from '../core/fs/tree'
+import { useFsStore } from '../core/fs/store'
 import type { AppProps } from '../core/types'
 import { useSystemStore } from '../core/store/system'
 import { wallpapers } from '../config/shell'
@@ -49,6 +51,13 @@ const CATEGORIES: Category[] = [
 export default function SettingsApp({ launch }: AppProps) {
   const initial = (launch as { page?: string } | undefined)?.page ?? 'home'
   const [page, setPage] = useState(initial)
+  const [sysPage, setSysPage] = useState<'display' | 'storage' | 'about'>(
+    'display',
+  )
+  const [quota, setQuota] = useState<{ used: number; total: number } | null>(
+    null,
+  )
+  const roots = useFsStore((s) => s.roots)
   const brightness = useSystemStore((s) => s.brightness)
   const setBrightness = useSystemStore((s) => s.setBrightness)
   const quick = useSystemStore((s) => s.quickActions)
@@ -59,7 +68,29 @@ export default function SettingsApp({ launch }: AppProps) {
   const setLocale = useI18n((s) => s.setLocale)
   const t = useT()
 
+  useEffect(() => {
+    let live = true
+    void navigator.storage?.estimate?.().then((e) => {
+      if (live && e)
+        setQuota({ used: e.usage ?? 0, total: e.quota ?? 0 })
+    })
+    return () => {
+      live = false
+    }
+  }, [])
+
   const cat = CATEGORIES.find((c) => c.id === page)
+
+  // Drives with usage bars — real OPFS estimate for C:, mock for D:.
+  const drives = (roots['This PC']?.children ?? []).filter(
+    (n) => n.kind === 'drive' && n.driveInfo,
+  )
+
+  const SYS_PAGES = [
+    { id: 'display', name: 'set.sub.display' },
+    { id: 'storage', name: 'set.sub.storage' },
+    { id: 'about', name: 'set.sub.about' },
+  ] as const satisfies readonly { id: typeof sysPage; name: MessageKey }[]
 
   return (
     <div className="flex h-full flex-col bg-white text-black">
@@ -124,29 +155,121 @@ export default function SettingsApp({ launch }: AppProps) {
           {/* Page content */}
           <div key={page} className="anim-fade min-w-0 flex-1 overflow-y-auto p-6">
             {page === 'system' && (
-              <div className="max-w-[520px]">
-                <h2 className="mb-1 text-[20px] font-light">{t('set.display')}</h2>
-                <p className="mb-6 text-[12.5px] text-[#777]">
-                  {t('set.display.sub')}
-                </p>
-                <div className="mb-6">
-                  <div className="mb-2 flex items-center justify-between">
-                    <span className="text-[13.5px]">{t('set.brightness')}</span>
-                    <span className="text-[12px] text-[#777]">{brightness}%</span>
-                  </div>
-                  <Slider value={brightness} onChange={setBrightness} />
+              <div className="flex max-w-[720px] gap-6">
+                {/* Sub-navigation — like Win10's System section pages */}
+                <div className="w-36 shrink-0">
+                  {SYS_PAGES.map((p) => (
+                    <button
+                      key={p.id}
+                      onClick={() => setSysPage(p.id)}
+                      className={`block w-full px-3 py-1.5 text-left text-[13px] ${
+                        sysPage === p.id
+                          ? 'bg-[#cce8ff] font-medium'
+                          : 'hover:bg-[#e5f3ff]'
+                      }`}
+                    >
+                      {t(p.name)}
+                    </button>
+                  ))}
                 </div>
-                <div className="flex items-center justify-between border-t border-[#eee] py-4">
-                  <div>
-                    <p className="text-[13.5px]">{t('set.nightlight')}</p>
-                    <p className="text-[12px] text-[#777]">
-                      {t('set.nightlight.desc')}
-                    </p>
-                  </div>
-                  <Toggle
-                    checked={!!quick.nightlight}
-                    onChange={() => toggleQuick('nightlight')}
-                  />
+
+                <div key={sysPage} className="anim-fade min-w-0 max-w-[520px] flex-1">
+                  {sysPage === 'display' && (
+                    <>
+                      <h2 className="mb-1 text-[20px] font-light">{t('set.display')}</h2>
+                      <p className="mb-6 text-[12.5px] text-[#777]">
+                        {t('set.display.sub')}
+                      </p>
+                      <div className="mb-6">
+                        <div className="mb-2 flex items-center justify-between">
+                          <span className="text-[13.5px]">{t('set.brightness')}</span>
+                          <span className="text-[12px] text-[#777]">{brightness}%</span>
+                        </div>
+                        <Slider value={brightness} onChange={setBrightness} />
+                      </div>
+                      <div className="flex items-center justify-between border-t border-[#eee] py-4">
+                        <div>
+                          <p className="text-[13.5px]">{t('set.nightlight')}</p>
+                          <p className="text-[12px] text-[#777]">
+                            {t('set.nightlight.desc')}
+                          </p>
+                        </div>
+                        <Toggle
+                          checked={!!quick.nightlight}
+                          onChange={() => toggleQuick('nightlight')}
+                        />
+                      </div>
+                    </>
+                  )}
+
+                  {sysPage === 'storage' && (
+                    <>
+                      <h2 className="mb-1 text-[20px] font-light">{t('set.storage')}</h2>
+                      <p className="mb-6 text-[12.5px] text-[#777]">
+                        {t('set.storage.sub')}
+                      </p>
+                      {drives.map((d) => {
+                        const info = d.driveInfo!
+                        const used = info.total - info.free
+                        const pct = info.total
+                          ? Math.min(100, (used / info.total) * 100)
+                          : 0
+                        return (
+                          <div key={d.name} className="mb-5">
+                            <p className="mb-1 text-[13.5px]">
+                              {d.labelKey ? t(d.labelKey) : d.name}
+                            </p>
+                            <div className="h-4 w-full border border-[#adadad] bg-white p-[2px]">
+                              <div
+                                className="h-full bg-[#0078d7]"
+                                style={{ width: `${pct}%` }}
+                              />
+                            </div>
+                            <p className="mt-1 text-[12px] text-[#777]">
+                              {t('set.storage.free', {
+                                free: formatSize(info.free),
+                                total: formatSize(info.total),
+                              })}
+                            </p>
+                          </div>
+                        )
+                      })}
+                      {quota && quota.total > 0 && (
+                        <p className="mt-6 border-t border-[#eee] pt-3 text-[12px] text-[#777]">
+                          {t('set.storage.browser', {
+                            used: formatSize(quota.used),
+                            total: formatSize(quota.total),
+                          })}
+                        </p>
+                      )}
+                    </>
+                  )}
+
+                  {sysPage === 'about' && (
+                    <>
+                      <h2 className="mb-4 text-[20px] font-light">{t('set.about')}</h2>
+                      <dl className="space-y-2 text-[13px]">
+                        {(
+                          [
+                            ['set.about.device', 'DESKTOP-WIN10'],
+                            ['set.about.edition', 'Windows 10 Pro (Web)'],
+                            ['set.about.version', '22H2'],
+                            ['set.about.build', '19045.3803 · React 19'],
+                            ['set.about.cpu', 'Vite Engine @ 5GHz'],
+                            ['set.about.ram', '8.0 GB'],
+                          ] as [MessageKey, string][]
+                        ).map(([k, v]) => (
+                          <div key={k} className="flex gap-2">
+                            <dt className="w-32 shrink-0 text-[#777]">{t(k)}</dt>
+                            <dd className="min-w-0 flex-1">{v}</dd>
+                          </div>
+                        ))}
+                      </dl>
+                      <p className="mt-6 text-[12px] text-[#777]">
+                        {t('set.about.note')}
+                      </p>
+                    </>
+                  )}
                 </div>
               </div>
             )}

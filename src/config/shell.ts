@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react'
 import type { MessageKey } from '../core/i18n/en'
+import type { FsNode } from '../core/fs/tree'
 import type { IconType } from '../core/types'
 import {
   AppsIcon,
@@ -66,13 +67,15 @@ export const wallpapers: Wallpaper[] = [
 
 export interface DesktopIconEntry {
   id: string
-  /** Display label — a message key resolved via `t()`. */
-  label: MessageKey
+  /** Display label — a message key resolved via `t()` (file names pass through). */
+  label: MessageKey | (string & {})
   icon: IconType
   appId: string
   launch?: unknown
   /** Window title — a message key resolved via `t()`. */
   title?: MessageKey
+  /** Set when the icon is a real file/folder on the OPFS Desktop. */
+  fs?: FsNode
 }
 
 export const desktopIcons: DesktopIconEntry[] = [

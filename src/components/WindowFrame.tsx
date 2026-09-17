@@ -17,7 +17,7 @@ export default function WindowFrame({ win }: { win: WindowState }) {
   const active = useWindowsStore((s) => s.activeId === win.id)
   const focusWindow = useWindowsStore((s) => s.focusWindow)
   const minimizeWindow = useWindowsStore((s) => s.minimizeWindow)
-  const closeWindow = useWindowsStore((s) => s.closeWindow)
+  const requestClose = useWindowsStore((s) => s.requestClose)
   const toggleMaximize = useWindowsStore((s) => s.toggleMaximize)
   const setBounds = useWindowsStore((s) => s.setBounds)
   const t = useT()
@@ -81,19 +81,21 @@ export default function WindowFrame({ win }: { win: WindowState }) {
     }
   }, [win.minimized])
 
-  // Windows closes with a quick shrink-fade before unmounting.
+  // Windows closes with a quick shrink-fade before unmounting — unless
+  // the app's closeGuard vetoes it (e.g. unsaved changes).
   const handleClose = () => {
     if (closing) return
+    if (win.closeGuard && win.closeGuard() === false) return
     setClosing(true)
     const el = rootRef.current
-    if (!el) return closeWindow(win.id)
+    if (!el) return requestClose(win.id)
     el.animate(
       [
         { transform: 'none', opacity: 1 },
         { transform: 'scale(0.94)', opacity: 0 },
       ],
       { duration: 110, easing: 'ease-in', fill: 'forwards' },
-    ).finished.finally(() => closeWindow(win.id))
+    ).finished.finally(() => requestClose(win.id))
   }
 
   const onTitlePointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
