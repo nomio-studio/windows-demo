@@ -97,7 +97,8 @@ export default function CalculatorApp(_props: AppProps) {
     </button>
   )
 
-  const keys: [string, () => void, 'num' | 'op' | 'eq'][] = [
+  type KeyDef = [label: string, fn: () => void, kind?: 'num' | 'op' | 'eq']
+  const keys: KeyDef[] = [
     ['%', () => unary((n) => (s.acc !== null ? (s.acc * n) / 100 : 0)), 'op'],
     ['CE', () => set({ cur: '0', fresh: true, err: false }), 'op'],
     ['C', () => set({ cur: '0', acc: null, op: null, fresh: true, err: false }), 'op'],
