@@ -29,7 +29,7 @@ export default defineConfig({
         display: 'standalone',
         orientation: 'landscape',
         theme_color: '#0078D7',
-        background_color: '#000000',
+        background_color: '#ffffff',
         categories: ['utilities', 'entertainment', 'personalization'],
         prefer_related_applications: false,
         handle_links: 'preferred',

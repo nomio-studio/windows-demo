@@ -114,9 +114,9 @@ const render = (size, logoFraction, fg, bg) => {
 }
 
 // ------------------------------------------------------------------ outputs
-const BLUE = [0, 173, 239] // #00adef (favicon colour)
-const WHITE = [255, 255, 255]
-const ACCENT = [0, 120, 215] // #0078D7 (Windows 10 accent)
+// Minimalist palette: black logo on a white background.
+const INK = [0, 0, 0]
+const PAPER = [255, 255, 255]
 
 const write = (rel, buf) => {
   const p = path.join(outDir, rel)
@@ -125,25 +125,26 @@ const write = (rel, buf) => {
   console.log(`wrote public/${rel} (${buf.length} bytes)`)
 }
 
-// Vector source of truth (SVG manifest icon + browser favicon).
+// Vector source of truth (SVG manifest icon + browser favicon):
+// black logo centred on a white square.
 write(
   'icon.svg',
   Buffer.from(
-    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 16"><path fill="#00adef" d="M0 2.2 6.5 1.3v6H0zM7.5 1.1 15 0v7.5H7.5zM0 8.9h6.5V15L0 14.1zM7.5 9H15v7l-7.5-1z"/></svg>`,
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><rect width="16" height="16" fill="#fff"/><path fill="#000" transform="translate(0.5 0)" d="M0 2.2 6.5 1.3v6H0zM7.5 1.1 15 0v7.5H7.5zM0 8.9h6.5V15L0 14.1zM7.5 9H15v7l-7.5-1z"/></svg>`,
   ),
 )
 
 const jobs = [
-  // Any-purpose: blue logo on transparency (install icon, taskbar, etc.)
-  ['icons/icon-192.png', 192, 0.86, BLUE, null],
-  ['icons/icon-512.png', 512, 0.86, BLUE, null],
-  // Maskable: full-bleed accent, logo inside the 80% safe zone.
-  ['icons/maskable-192.png', 192, 0.55, WHITE, ACCENT],
-  ['icons/maskable-512.png', 512, 0.55, WHITE, ACCENT],
+  // Any-purpose: install icon, taskbar, app switcher.
+  ['icons/icon-192.png', 192, 0.86, INK, PAPER],
+  ['icons/icon-512.png', 512, 0.86, INK, PAPER],
+  // Maskable: full-bleed white, logo inside the 80% safe zone.
+  ['icons/maskable-192.png', 192, 0.55, INK, PAPER],
+  ['icons/maskable-512.png', 512, 0.55, INK, PAPER],
   // iOS requires an opaque touch icon.
-  ['apple-touch-icon.png', 180, 0.78, WHITE, ACCENT],
+  ['apple-touch-icon.png', 180, 0.78, INK, PAPER],
   // PNG favicon fallback for older browsers.
-  ['favicon-32x32.png', 32, 0.86, BLUE, null],
+  ['favicon-32x32.png', 32, 0.86, INK, PAPER],
 ]
 
 for (const [rel, size, frac, fg, bg] of jobs) {
