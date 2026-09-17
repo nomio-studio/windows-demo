@@ -98,7 +98,7 @@ export default function SettingsApp({ launch }: AppProps) {
       ) : (
         <div className="flex min-h-0 flex-1">
           {/* Section nav */}
-          <div className="w-52 shrink-0 border-r border-[#e8e8e8] py-2">
+          <div className="w-44 shrink-0 border-r border-[#e8e8e8] py-2">
             {CATEGORIES.map((c) => (
               <button
                 key={c.id}

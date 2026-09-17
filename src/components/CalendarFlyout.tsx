@@ -27,7 +27,7 @@ export default function CalendarFlyout() {
   }, [now])
 
   return (
-    <div className="anim-flyout-up absolute bottom-10 right-0 z-[55000] w-[340px] border-l border-black/60 bg-[#1f1f1f]/95 p-4 text-white shadow-2xl backdrop-blur-xl">
+    <div className="anim-flyout-up absolute bottom-10 right-0 z-[55000] w-[340px] max-w-full border-l border-black/60 bg-[#1f1f1f]/95 p-4 text-white shadow-2xl backdrop-blur-xl">
       <p className="text-[40px] font-extralight leading-none">
         {now.toLocaleTimeString('en-US', {
           hour: '2-digit',

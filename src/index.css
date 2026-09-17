@@ -6,6 +6,12 @@ body,
   height: 100%;
 }
 
+/* Track the *visual* viewport on mobile so the taskbar never hides
+   behind collapsing browser chrome. */
+#root {
+  height: 100dvh;
+}
+
 body {
   margin: 0;
   font-family:

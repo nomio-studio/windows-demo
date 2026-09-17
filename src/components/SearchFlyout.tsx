@@ -32,7 +32,7 @@ export default function SearchFlyout() {
       <div className="flex-1 overflow-y-auto p-4">
         <p className="mb-4 text-[22px] font-light">{greeting}</p>
         <p className="mb-2 text-[12px] font-semibold text-white/60">Top apps</p>
-        <div className="mb-5 grid grid-cols-6 gap-1">
+        <div className="mb-5 grid grid-cols-3 gap-1 sm:grid-cols-6">
           {topApps.map((a) => (
             <button
               key={a.id}

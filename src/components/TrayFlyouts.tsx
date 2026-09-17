@@ -59,7 +59,7 @@ function Volume() {
   const volume = useSystemStore((s) => s.volume)
   const setVolume = useSystemStore((s) => s.setVolume)
   return (
-    <div className={`${PANEL} right-24 flex h-14 w-72 items-center gap-3 px-4`}>
+    <div className={`${PANEL} right-2 flex h-14 w-72 max-w-[calc(100vw-16px)] items-center gap-3 px-4 sm:right-24`}>
       <VolumeIcon className="size-5 shrink-0" />
       <Slider value={volume} onChange={setVolume} />
       <span className="w-8 text-right text-[13px]">{volume}</span>
@@ -72,7 +72,7 @@ function Network() {
   const toggleWifi = useSystemStore((s) => s.toggleWifi)
   const toggleFlyout = useSystemStore((s) => s.toggleFlyout)
   return (
-    <div className={`${PANEL} right-0 max-h-[420px] w-[340px] overflow-y-auto`}>
+    <div className={`${PANEL} right-0 max-h-[420px] w-[340px] max-w-full overflow-y-auto`}>
       <div className="flex items-center justify-between px-4 pb-1 pt-3">
         <span className="text-[15px]">Wi-Fi</span>
         <Toggle checked={wifiOn} onChange={toggleWifi} />

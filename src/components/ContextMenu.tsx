@@ -11,7 +11,15 @@ interface Props {
 const ROW_H = 26
 const MENU_W = 230
 
-function MenuList({ items, onClose }: { items: ContextMenuItem[]; onClose: () => void }) {
+function MenuList({
+  items,
+  onClose,
+  flipX,
+}: {
+  items: ContextMenuItem[]
+  onClose: () => void
+  flipX: boolean
+}) {
   return (
     <div className="w-[230px] border border-[#9a9a9a]/60 bg-[#f2f2f2]/95 py-[3px] text-black shadow-[0_4px_16px_rgba(0,0,0,0.35)] backdrop-blur-md">
       {items.map((item, i) =>
@@ -41,8 +49,12 @@ function MenuList({ items, onClose }: { items: ContextMenuItem[]; onClose: () =>
               {item.submenu && <ChevronRight className="size-3 text-black/60" />}
             </button>
             {item.submenu && !item.disabled && (
-              <div className="invisible absolute left-full top-[-4px] z-10 group-hover:visible">
-                <MenuList items={item.submenu} onClose={onClose} />
+              <div
+                className={`invisible absolute top-[-4px] z-10 group-hover:visible ${
+                  flipX ? 'right-full' : 'left-full'
+                }`}
+              >
+                <MenuList items={item.submenu} onClose={onClose} flipX={flipX} />
               </div>
             )}
           </div>
@@ -60,6 +72,8 @@ export default function ContextMenu({ x, y, items, onClose }: Props) {
   const estH = items.length * (ROW_H + 1) + 8
   const cx = Math.max(0, Math.min(x, window.innerWidth - MENU_W - 8))
   const cy = Math.max(0, Math.min(y, window.innerHeight - estH - 8))
+  // No room for a submenu to the right — open them leftwards instead.
+  const flipX = cx + MENU_W * 2 + 8 > window.innerWidth
   return (
     <>
       <div
@@ -71,7 +85,7 @@ export default function ContextMenu({ x, y, items, onClose }: Props) {
         }}
       />
       <div className="anim-menu fixed z-[70000]" style={{ left: cx, top: cy }}>
-        <MenuList items={items} onClose={onClose} />
+        <MenuList items={items} onClose={onClose} flipX={flipX} />
       </div>
     </>
   )

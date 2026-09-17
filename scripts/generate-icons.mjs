@@ -126,25 +126,25 @@ const write = (rel, buf) => {
 }
 
 // Vector source of truth (SVG manifest icon + browser favicon):
-// black logo centred on a white square.
+// black logo centred on a white square with generous padding.
 write(
   'icon.svg',
   Buffer.from(
-    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><rect width="16" height="16" fill="#fff"/><path fill="#000" transform="translate(0.5 0)" d="M0 2.2 6.5 1.3v6H0zM7.5 1.1 15 0v7.5H7.5zM0 8.9h6.5V15L0 14.1zM7.5 9H15v7l-7.5-1z"/></svg>`,
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><rect width="20" height="20" fill="#fff"/><path fill="#000" transform="translate(2.5 2)" d="M0 2.2 6.5 1.3v6H0zM7.5 1.1 15 0v7.5H7.5zM0 8.9h6.5V15L0 14.1zM7.5 9H15v7l-7.5-1z"/></svg>`,
   ),
 )
 
 const jobs = [
   // Any-purpose: install icon, taskbar, app switcher.
-  ['icons/icon-192.png', 192, 0.86, INK, PAPER],
-  ['icons/icon-512.png', 512, 0.86, INK, PAPER],
+  ['icons/icon-192.png', 192, 0.72, INK, PAPER],
+  ['icons/icon-512.png', 512, 0.72, INK, PAPER],
   // Maskable: full-bleed white, logo inside the 80% safe zone.
-  ['icons/maskable-192.png', 192, 0.55, INK, PAPER],
-  ['icons/maskable-512.png', 512, 0.55, INK, PAPER],
+  ['icons/maskable-192.png', 192, 0.48, INK, PAPER],
+  ['icons/maskable-512.png', 512, 0.48, INK, PAPER],
   // iOS requires an opaque touch icon.
-  ['apple-touch-icon.png', 180, 0.78, INK, PAPER],
+  ['apple-touch-icon.png', 180, 0.62, INK, PAPER],
   // PNG favicon fallback for older browsers.
-  ['favicon-32x32.png', 32, 0.86, INK, PAPER],
+  ['favicon-32x32.png', 32, 0.78, INK, PAPER],
 ]
 
 for (const [rel, size, frac, fg, bg] of jobs) {

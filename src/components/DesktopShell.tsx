@@ -35,6 +35,7 @@ export default function DesktopShell() {
   const windows = useWindowsStore((s) => s.windows)
   const openApp = useWindowsStore((s) => s.openApp)
   const minimizeAll = useWindowsStore((s) => s.minimizeAll)
+  const reflow = useWindowsStore((s) => s.reflow)
   const flyout = useSystemStore((s) => s.flyout)
   const setFlyout = useSystemStore((s) => s.setFlyout)
   const setPhase = useSystemStore((s) => s.setPhase)
@@ -54,6 +55,12 @@ export default function DesktopShell() {
     setMenu(null)
     setFlyout(null)
   })
+
+  // Keep windows fitted to the viewport on resize/rotation.
+  useEffect(() => {
+    window.addEventListener('resize', reflow)
+    return () => window.removeEventListener('resize', reflow)
+  }, [reflow])
 
   // App shortcut deep links (`?app=<id>` from manifest shortcuts).
   useEffect(() => {

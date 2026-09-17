@@ -38,10 +38,10 @@ export default function LockScreen() {
       {phase === 'lock' && (
         <>
           <div className="absolute bottom-[15%] left-[7%] text-white">
-            <div className="text-[92px] font-extralight leading-none tracking-tight">
+            <div className="text-[clamp(48px,15vw,92px)] font-extralight leading-none tracking-tight">
               {formatTimeShort(now)}
             </div>
-            <div className="mt-3 text-[32px] font-light">
+            <div className="mt-3 text-[clamp(18px,5vw,32px)] font-light">
               {formatDateLong(now)}
             </div>
           </div>
@@ -56,10 +56,12 @@ export default function LockScreen() {
           className="anim-lock-up absolute inset-0 flex flex-col items-center justify-center bg-black/30"
           onClick={(e) => e.stopPropagation()}
         >
-          <AvatarIcon className="size-[170px] rounded-full" />
-          <div className="mt-5 text-[30px] font-light text-white">User</div>
+          <AvatarIcon className="size-[clamp(96px,30vw,170px)] rounded-full" />
+          <div className="mt-5 text-[clamp(22px,6vw,30px)] font-light text-white">
+            User
+          </div>
           <form
-            className="mt-6 flex"
+            className="mt-6 flex max-w-[92vw]"
             onSubmit={(e) => {
               e.preventDefault()
               unlock()
@@ -71,7 +73,7 @@ export default function LockScreen() {
               value={pin}
               onChange={(e) => setPin(e.target.value)}
               placeholder="PIN"
-              className="h-9 w-60 bg-white/90 px-3 text-[14px] text-black outline-none placeholder:text-black/50"
+              className="h-9 w-60 max-w-full bg-white/90 px-3 text-[14px] text-black outline-none placeholder:text-black/50"
             />
             <button
               type="submit"

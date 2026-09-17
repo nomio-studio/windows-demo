@@ -58,15 +58,22 @@ export default function Taskbar({ onMenu }: Props) {
         <WindowsLogo className="size-5 text-white hover:text-[#4da6e8]" />
       </button>
 
-      {/* Search box */}
+      {/* Search: icon on small screens, expanding box on larger */}
       <button
-        className={`m-1.5 hidden w-80 items-center gap-2 rounded-[2px] bg-[#f2f2f2] px-2.5 text-left text-[13px] text-[#3c3c3c] hover:bg-white sm:flex ${
+        className={`flex w-11 items-center justify-center sm:hidden ${hover}`}
+        onClick={() => toggleFlyout('search')}
+        aria-label="Search"
+      >
+        <SearchIcon className="size-5" />
+      </button>
+      <button
+        className={`m-1.5 hidden w-36 items-center gap-2 rounded-[2px] bg-[#f2f2f2] px-2.5 text-left text-[13px] text-[#3c3c3c] hover:bg-white sm:flex md:w-56 lg:w-80 ${
           flyout === 'search' ? 'bg-white' : ''
         }`}
         onClick={() => toggleFlyout('search')}
         onContextMenu={(e) => e.stopPropagation()}
       >
-        <SearchIcon className="size-4 text-[#3c3c3c]" />
+        <SearchIcon className="size-4 shrink-0 text-[#3c3c3c]" />
         <span className="truncate">Type here to search</span>
       </button>
 
@@ -79,8 +86,8 @@ export default function Taskbar({ onMenu }: Props) {
         <TaskViewIcon className="size-5" />
       </button>
 
-      {/* App buttons */}
-      <div className="flex min-w-0 flex-1 items-stretch">
+      {/* App buttons (scrolls instead of clipping when crowded) */}
+      <div className="flex min-w-0 flex-1 items-stretch overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {items.map((appId) => {
           const app = getApp(appId)
           const appWins = windows.filter((w) => w.appId === appId)
@@ -110,10 +117,10 @@ export default function Taskbar({ onMenu }: Props) {
         })}
       </div>
 
-      {/* System tray */}
+      {/* System tray (status icons collapse on small screens) */}
       <div className="flex items-stretch">
         <button
-          className={`flex w-6 items-center justify-center ${hover} ${
+          className={`hidden w-6 items-center justify-center sm:flex ${hover} ${
             flyout === 'trayOverflow' ? 'bg-white/10' : ''
           }`}
           onClick={() => toggleFlyout('trayOverflow')}
@@ -122,7 +129,7 @@ export default function Taskbar({ onMenu }: Props) {
           <ChevronUp className="size-3.5" />
         </button>
         <button
-          className={`flex w-7 items-center justify-center ${hover} ${
+          className={`hidden w-7 items-center justify-center sm:flex ${hover} ${
             wifiOn ? '' : 'opacity-40'
           } ${flyout === 'network' ? 'bg-white/10' : ''}`}
           onClick={() => toggleFlyout('network')}
@@ -131,7 +138,7 @@ export default function Taskbar({ onMenu }: Props) {
           <WifiIcon className="size-4" />
         </button>
         <button
-          className={`flex w-7 items-center justify-center ${hover} ${
+          className={`hidden w-7 items-center justify-center sm:flex ${hover} ${
             flyout === 'volume' ? 'bg-white/10' : ''
           }`}
           onClick={() => toggleFlyout('volume')}
@@ -140,13 +147,13 @@ export default function Taskbar({ onMenu }: Props) {
           <VolumeIcon className="size-4" />
         </button>
         <button
-          className={`flex w-[76px] flex-col items-center justify-center text-[11.5px] leading-[1.2] ${hover} ${
+          className={`flex w-auto flex-col items-center justify-center px-2 text-[11.5px] leading-[1.2] sm:w-[76px] sm:px-0 ${hover} ${
             flyout === 'calendar' ? 'bg-white/10' : ''
           }`}
           onClick={() => toggleFlyout('calendar')}
         >
           <span>{formatTime(now)}</span>
-          <span>{formatDate(now)}</span>
+          <span className="hidden sm:block">{formatDate(now)}</span>
         </button>
         <button
           className={`flex w-9 items-center justify-center border-r border-white/25 ${hover} ${

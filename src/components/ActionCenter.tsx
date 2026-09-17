@@ -64,7 +64,7 @@ export default function ActionCenter() {
   ]
 
   return (
-    <div className="anim-flyout-right absolute bottom-10 right-0 z-[55000] flex h-[calc(100%-40px)] w-[360px] flex-col border-l border-black/60 bg-[#1f1f1f]/95 text-white shadow-2xl backdrop-blur-xl">
+    <div className="anim-flyout-right absolute bottom-10 right-0 z-[55000] flex h-[calc(100%-40px)] w-[360px] max-w-full flex-col border-l border-black/60 bg-[#1f1f1f]/95 text-white shadow-2xl backdrop-blur-xl">
       {/* Notifications */}
       <div className="min-h-0 flex-1 overflow-y-auto p-3">
         {notes.length > 0 ? (

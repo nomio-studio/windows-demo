@@ -20,7 +20,7 @@ export default function UpdateToast() {
   if (!updateReady) return null
 
   return (
-    <div className="anim-toast-in fixed right-2 bottom-[52px] z-[60000] w-[360px] overflow-hidden rounded-sm border border-black/50 bg-[#202020] shadow-2xl">
+    <div className="anim-toast-in fixed right-2 bottom-[52px] z-[60000] w-[360px] max-w-[calc(100vw-16px)] overflow-hidden rounded-sm border border-black/50 bg-[#202020] shadow-2xl">
       <div className="flex items-center gap-2 px-3 pt-2.5">
         <UpdateIcon className="h-4 w-4 text-[#0078D7]" />
         <span className="text-[11px] text-white/60">Windows Update</span>

@@ -76,7 +76,7 @@ export default function StartMenu() {
 
   return (
     <div
-      className="anim-flyout-up absolute bottom-10 left-0 z-[55000] flex h-[640px] max-h-[calc(100%-40px)] border border-black/60 bg-[#1f1f1f]/95 text-white shadow-2xl backdrop-blur-xl"
+      className="anim-flyout-up absolute bottom-10 left-0 z-[55000] flex h-[640px] max-h-[calc(100%-40px)] max-w-[calc(100vw-6px)] overflow-hidden border border-black/60 bg-[#1f1f1f]/95 text-white shadow-2xl backdrop-blur-xl"
       onContextMenu={(e) => e.preventDefault()}
     >
       {/* Side rail */}
@@ -140,7 +140,7 @@ export default function StartMenu() {
       </div>
 
       {/* App list */}
-      <div className="w-[236px] shrink-0 overflow-y-auto py-1">
+      <div className="w-[190px] shrink-0 overflow-y-auto py-1 sm:w-[236px]">
         {groups.map(([letter, entries]) => (
           <div key={letter}>
             <div className="px-4 pb-0.5 pt-2.5 text-[12px] font-semibold text-white/80">
@@ -169,8 +169,8 @@ export default function StartMenu() {
         ))}
       </div>
 
-      {/* Tiles */}
-      <div className="w-[360px] overflow-y-auto px-3 py-2">
+      {/* Tiles (hidden on small screens — app list still works) */}
+      <div className="hidden w-[272px] overflow-y-auto px-3 py-2 sm:block lg:w-[360px]">
         {startTileGroups.map((g) => (
           <div key={g.name} className="mb-4">
             <div className="mb-2 mt-1 px-0.5 text-[12px] text-white/70">

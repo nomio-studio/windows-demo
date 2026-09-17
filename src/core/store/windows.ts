@@ -27,6 +27,8 @@ interface WindowsStore {
   toggleMaximize: (id: string) => void
   setBounds: (id: string, r: Rect) => void
   minimizeAll: () => void
+  /** Re-fit windows after a viewport resize (maximize stays synced). */
+  reflow: () => void
 }
 
 function spawnBounds(appId: string, index: number): Rect {
@@ -60,17 +62,26 @@ export const useWindowsStore = create<WindowsStore>()((set, get) => ({
       }
     }
     const id = `w${++counter}`
+    // Phone-sized screens: apps open maximized like mobile apps.
+    const full = window.innerWidth < 640
     const win: WindowState = {
       id,
       appId,
       launch: opts?.launch,
       title: opts?.title,
       icon: opts?.icon,
-      bounds: spawnBounds(appId, s.windows.length),
+      bounds: full
+        ? {
+            x: 0,
+            y: 0,
+            width: window.innerWidth,
+            height: window.innerHeight - TASKBAR_HEIGHT,
+          }
+        : spawnBounds(appId, s.windows.length),
       prevBounds: null,
       z: s.topZ + 1,
       minimized: false,
-      maximized: false,
+      maximized: full,
     }
     set({ windows: [...s.windows, win], activeId: id, topZ: s.topZ + 1 })
   },
@@ -148,4 +159,28 @@ export const useWindowsStore = create<WindowsStore>()((set, get) => ({
       activeId: null,
       windows: s.windows.map((w) => ({ ...w, minimized: true })),
     })),
+
+  reflow: () =>
+    set((s) => {
+      const vw = window.innerWidth
+      const vh = window.innerHeight - TASKBAR_HEIGHT
+      return {
+        windows: s.windows.map((w) => {
+          if (w.maximized)
+            return { ...w, bounds: { x: 0, y: 0, width: vw, height: vh } }
+          const width = Math.min(w.bounds.width, vw)
+          const height = Math.min(w.bounds.height, vh)
+          return {
+            ...w,
+            bounds: {
+              width,
+              height,
+              // Keep at least a sliver of the title bar reachable.
+              x: Math.max(60 - width, Math.min(vw - 60, w.bounds.x)),
+              y: Math.max(0, Math.min(vh - 32, w.bounds.y)),
+            },
+          }
+        }),
+      }
+    }),
 }))

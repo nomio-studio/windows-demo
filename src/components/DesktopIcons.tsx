@@ -5,9 +5,9 @@ import { useWindowsStore } from '../core/store/windows'
 import { useSystemStore } from '../core/store/system'
 
 const SIZES = {
-  small: { box: 'w-[70px] py-1', icon: 'size-6', text: 'text-[11px]' },
-  medium: { box: 'w-[84px] py-1.5', icon: 'size-8', text: 'text-[12px]' },
-  large: { box: 'w-[96px] py-2', icon: 'size-12', text: 'text-[12px]' },
+  small: { box: 'w-[62px] py-0.5', icon: 'size-5', text: 'text-[10px]' },
+  medium: { box: 'w-[74px] py-1', icon: 'size-7', text: 'text-[11px]' },
+  large: { box: 'w-[86px] py-1.5', icon: 'size-10', text: 'text-[11px]' },
 } as const
 
 interface Props {

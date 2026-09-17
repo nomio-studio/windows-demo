@@ -117,7 +117,7 @@ export default function ExplorerApp({ launch }: AppProps) {
             </span>
           ))}
         </div>
-        <div className="flex h-6 w-52 items-center gap-1.5 border border-[#cfcfcf] px-2">
+        <div className="flex h-6 w-40 shrink-0 items-center gap-1.5 border border-[#cfcfcf] px-2">
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -131,7 +131,7 @@ export default function ExplorerApp({ launch }: AppProps) {
       {/* Body */}
       <div className="flex min-h-0 flex-1">
         {/* Navigation pane */}
-        <div className="w-44 shrink-0 overflow-y-auto border-r border-[#e8e8e8] py-1">
+        <div className="w-36 shrink-0 overflow-y-auto border-r border-[#e8e8e8] py-1">
           {navEntries.map((n) => {
             const active = path.join('/') === n.path.join('/')
             return (
