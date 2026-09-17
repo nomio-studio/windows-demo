@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react'
 import type { MouseEvent as ReactMouseEvent } from 'react'
 import { desktopIcons, type DesktopIconEntry } from '../config/shell'
+import { useT } from '../core/i18n'
 import { useWindowsStore } from '../core/store/windows'
 import { useSystemStore } from '../core/store/system'
 
@@ -24,6 +25,7 @@ export default function DesktopIcons({ onMenu }: Props) {
   // on touch — two rapid `click`s on the same icon always arrive.
   const lastTap = useRef<{ id: string; t: number }>({ id: '', t: 0 })
   const sz = SIZES[iconSize]
+  const t = useT()
 
   return (
     <div
@@ -62,7 +64,7 @@ export default function DesktopIcons({ onMenu }: Props) {
           <span
             className={`${sz.text} w-full break-words px-0.5 text-center leading-[1.15] text-white [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:2] overflow-hidden [text-shadow:0_1px_3px_rgba(0,0,0,0.9)]`}
           >
-            {d.label}
+            {t(d.label)}
           </span>
         </button>
       ))}

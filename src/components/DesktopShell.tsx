@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import type { MouseEvent as ReactMouseEvent } from 'react'
 import { useEscape } from '../core/hooks'
+import { useT } from '../core/i18n'
 import { usePwaStore } from '../core/store/pwa'
 import {
   useSystemStore,
@@ -45,6 +46,7 @@ export default function DesktopShell() {
   const pendingFile = usePwaStore((s) => s.pendingFile)
   const setPendingFile = usePwaStore((s) => s.setPendingFile)
   const [menu, setMenu] = useState<MenuState | null>(null)
+  const t = useT()
 
   const openMenu = (e: ReactMouseEvent, items: ContextMenuItem[]) => {
     e.preventDefault()
@@ -89,101 +91,103 @@ export default function DesktopShell() {
       .then((text) =>
         openApp('notepad', {
           launch: { name: pendingFile.name, text },
-          title: `${pendingFile.name} - Notepad`,
+          title: t('app.notepadFile', { name: pendingFile.name }),
         }),
       )
       .catch(() => {})
-  }, [pendingFile, openApp, setPendingFile])
+  }, [pendingFile, openApp, setPendingFile, t])
 
   const openSettings = (page: string) =>
     openApp('settings', { launch: { page } })
 
   const desktopMenu = (): ContextMenuItem[] => [
     {
-      label: 'View',
+      label: t('menu.view'),
       submenu: (['large', 'medium', 'small'] as IconSize[]).map((s) => ({
-        label: `${s[0].toUpperCase()}${s.slice(1)} icons`,
+        label: t(`menu.icons.${s}`),
         checked: iconSize === s,
         onClick: () => setIconSize(s),
       })),
     },
     {
-      label: 'Sort by',
-      submenu: ['Name', 'Size', 'Item type', 'Date modified'].map((l, i) => ({
-        label: l,
+      label: t('menu.sortBy'),
+      submenu: (['name', 'size', 'type', 'date'] as const).map((k, i) => ({
+        label: t(`menu.sort.${k}`),
         checked: i === 0,
       })),
     },
-    { label: 'Refresh' },
+    { label: t('menu.refresh') },
     { type: 'separator' },
-    { label: 'Paste', disabled: true },
-    { label: 'Paste shortcut', disabled: true },
+    { label: t('menu.paste'), disabled: true },
+    { label: t('menu.pasteShortcut'), disabled: true },
     { type: 'separator' },
-    { label: 'Display settings', onClick: () => openSettings('system') },
-    { label: 'Personalize', onClick: () => openSettings('personalization') },
+    { label: t('menu.displaySettings'), onClick: () => openSettings('system') },
+    { label: t('menu.personalize'), onClick: () => openSettings('personalization') },
   ]
 
   const iconMenu = (entry: DesktopIconEntry): ContextMenuItem[] => [
     {
-      label: 'Open',
+      label: t('menu.open'),
       onClick: () => openApp(entry.appId, { launch: entry.launch, title: entry.title }),
     },
     { type: 'separator' },
-    { label: 'Pin to Start' },
-    { label: 'Pin to taskbar' },
+    { label: t('menu.pinStart') },
+    { label: t('menu.pinTaskbar') },
     { type: 'separator' },
-    { label: 'Properties' },
+    { label: t('menu.properties') },
   ]
 
   const taskbarMenu = (): ContextMenuItem[] => [
     {
-      label: 'Toolbars',
-      submenu: ['Address', 'Links', 'Desktop'].map((l) => ({ label: l })),
+      label: t('menu.toolbars'),
+      submenu: (['address', 'links', 'desktop'] as const).map((k) => ({
+        label: t(`menu.toolbar.${k}`),
+      })),
     },
     {
-      label: 'Search',
+      label: t('menu.search'),
       submenu: [
-        { label: 'Hidden' },
-        { label: 'Show search icon' },
-        { label: 'Show search box', checked: true },
+        { label: t('menu.search.hidden') },
+        { label: t('menu.search.icon') },
+        { label: t('menu.search.box'), checked: true },
       ],
     },
     { type: 'separator' },
     {
-      label: 'Task Manager',
-      onClick: () => openApp('modern', { title: 'Task Manager' }),
+      label: t('app.taskmgr'),
+      onClick: () => openApp('modern', { title: 'app.taskmgr' }),
     },
     { type: 'separator' },
-    { label: 'Lock the taskbar', checked: true },
-    { label: 'Taskbar settings', onClick: () => openSettings('personalization') },
+    { label: t('menu.lockTaskbar'), checked: true },
+    { label: t('menu.taskbarSettings'), onClick: () => openSettings('personalization') },
   ]
 
   const winxMenu = (): ContextMenuItem[] => [
-    { label: 'Programs and Features' },
-    { label: 'Power Options' },
+    { label: t('winx.programs') },
+    { label: t('winx.powerOptions') },
     { type: 'separator' },
-    { label: 'System', onClick: () => openSettings('system') },
-    { label: 'Device Manager' },
-    { label: 'Network Connections' },
-    { label: 'Disk Management' },
+    { label: t('winx.system'), onClick: () => openSettings('system') },
+    { label: t('winx.deviceManager') },
+    { label: t('winx.netConnections') },
+    { label: t('winx.diskMgmt') },
     { type: 'separator' },
-    { label: 'Task Manager', onClick: () => openApp('modern', { title: 'Task Manager' }) },
-    { label: 'Settings', onClick: () => openApp('settings') },
+    { label: t('app.taskmgr'), onClick: () => openApp('modern', { title: 'app.taskmgr' }) },
+    { label: t('app.settings'), onClick: () => openApp('settings') },
     { type: 'separator' },
-    { label: 'File Explorer', onClick: () => openApp('explorer') },
-    { label: 'Search', onClick: () => setFlyout('search') },
-    { label: 'Run' },
+    { label: t('app.explorer'), onClick: () => openApp('explorer') },
+    { label: t('menu.search'), onClick: () => setFlyout('search') },
+    { label: t('winx.run') },
     { type: 'separator' },
     {
-      label: 'Shut down or sign out',
+      label: t('winx.shutdown'),
       submenu: [
-        { label: 'Sign out', onClick: () => setPhase('lock') },
-        { label: 'Sleep', onClick: () => setPhase('lock') },
-        { label: 'Shut down', onClick: () => setPhase('shutdown') },
-        { label: 'Restart', onClick: () => setPhase('restart') },
+        { label: t('power.signout'), onClick: () => setPhase('lock') },
+        { label: t('power.sleep'), onClick: () => setPhase('lock') },
+        { label: t('power.shutdown'), onClick: () => setPhase('shutdown') },
+        { label: t('power.restart'), onClick: () => setPhase('restart') },
       ],
     },
-    { label: 'Desktop', onClick: minimizeAll },
+    { label: t('menu.toolbar.desktop'), onClick: minimizeAll },
   ]
 
   return (

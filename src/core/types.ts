@@ -1,4 +1,5 @@
 import type { ComponentType } from 'react'
+import type { MessageKey } from './i18n/en'
 
 export type IconType = ComponentType<{ className?: string }>
 
@@ -25,7 +26,8 @@ export interface AppProps {
  */
 export interface AppDefinition {
   id: string
-  title: string
+  /** Display name — a message key resolved via `t()` at render. */
+  title: MessageKey
   icon: IconType
   component: ComponentType<AppProps>
   defaultSize: Size
@@ -42,7 +44,8 @@ export interface WindowState {
   id: string
   appId: string
   launch?: unknown
-  /** Optional overrides so a generic app can pose as another program. */
+  /** Optional overrides so a generic app can pose as another program.
+   *  `title` may be a message key or a literal (resolved by `t()`). */
   title?: string
   icon?: IconType
   bounds: Rect

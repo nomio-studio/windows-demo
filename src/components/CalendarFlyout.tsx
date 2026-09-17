@@ -1,16 +1,18 @@
 import { useMemo } from 'react'
 import { formatDateLong, useClock } from '../core/hooks'
-
-const DOW = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']
+import { useLocale, useT } from '../core/i18n'
 
 /** Clock flyout: digital time + mini month calendar. */
 export default function CalendarFlyout() {
   const now = useClock()
+  const t = useT()
+  const locale = useLocale()
+  const dow = t('cal.dow').split(' ')
 
   const { label, weeks, today } = useMemo(() => {
     const y = now.getFullYear()
     const m = now.getMonth()
-    const label = now.toLocaleDateString('en-US', {
+    const label = now.toLocaleDateString(locale, {
       month: 'long',
       year: 'numeric',
     })
@@ -24,25 +26,25 @@ export default function CalendarFlyout() {
     const weeks: (number | null)[][] = []
     for (let i = 0; i < cells.length; i += 7) weeks.push(cells.slice(i, i + 7))
     return { label, weeks, today: now.getDate() }
-  }, [now])
+  }, [now, locale])
 
   return (
     <div className="anim-flyout-up absolute bottom-10 right-0 z-[55000] max-h-[calc(100%-40px)] w-[340px] max-w-full overflow-y-auto border-l border-black/60 bg-[#1f1f1f]/95 p-4 text-white shadow-2xl backdrop-blur-xl">
       <p className="text-[40px] font-extralight leading-none">
-        {now.toLocaleTimeString('en-US', {
+        {now.toLocaleTimeString(locale, {
           hour: '2-digit',
           minute: '2-digit',
           hour12: false,
         })}
       </p>
       <p className="mb-3 mt-1 text-[13px] text-white/70">
-        {formatDateLong(now)}
+        {formatDateLong(now, locale)}
       </p>
 
       <div className="border-t border-white/15 pt-3">
         <p className="mb-2 px-1 text-[13px]">{label}</p>
         <div className="grid grid-cols-7 text-center">
-          {DOW.map((d) => (
+          {dow.map((d) => (
             <span key={d} className="py-1 text-[11px] text-white/55">
               {d}
             </span>
@@ -65,7 +67,7 @@ export default function CalendarFlyout() {
       </div>
 
       <div className="mt-3 border-t border-white/15 pt-2.5 text-[12px] text-white/50">
-        No events today
+        {t('cal.noEvents')}
       </div>
     </div>
   )

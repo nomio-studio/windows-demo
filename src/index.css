@@ -33,6 +33,22 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+/* zh-CN: keep Segoe UI for Latin, fall back to the platform's hanzi UI
+   font — same pairing Windows itself uses. */
+html[lang^='zh'] body {
+  font-family:
+    "Segoe UI",
+    "Segoe UI Variable",
+    "Microsoft YaHei",
+    "PingFang SC",
+    "Noto Sans CJK SC",
+    system-ui,
+    -apple-system,
+    "Helvetica Neue",
+    Arial,
+    sans-serif;
+}
+
 /* Desktop-style UI: no text selection, callouts or tap-zoom delay
    except in editable fields */
 * {

@@ -1,5 +1,6 @@
 import { useLayoutEffect, useRef, useState } from 'react'
 import type { PointerEvent as ReactPointerEvent } from 'react'
+import { useT } from '../core/i18n'
 import { getApp } from '../core/registry'
 import { shellSize, useWindowsStore } from '../core/store/windows'
 import type { WindowState } from '../core/types'
@@ -19,6 +20,7 @@ export default function WindowFrame({ win }: { win: WindowState }) {
   const closeWindow = useWindowsStore((s) => s.closeWindow)
   const toggleMaximize = useWindowsStore((s) => s.toggleMaximize)
   const setBounds = useWindowsStore((s) => s.setBounds)
+  const t = useT()
   const min = app.minSize ?? { width: 320, height: 200 }
   const rootRef = useRef<HTMLDivElement>(null)
   // Stays visible until the minimize-outro finishes, then display:none.
@@ -29,7 +31,7 @@ export default function WindowFrame({ win }: { win: WindowState }) {
   const prevBounds = useRef(win.bounds)
 
   const Icon = win.icon ?? app.icon
-  const title = win.title ?? app.title
+  const title = t(win.title ?? app.title)
   const AppComponent = app.component
 
   // Maximize/restore: FLIP — scale from the previous frame to the new
@@ -228,7 +230,7 @@ export default function WindowFrame({ win }: { win: WindowState }) {
           <button
             className={`${btn} hover:bg-black/10`}
             onClick={() => minimizeWindow(win.id)}
-            aria-label="Minimize"
+            aria-label={t('aria.minimize')}
             tabIndex={-1}
           >
             <MinimizeIcon className="size-[10px]" />
@@ -236,7 +238,7 @@ export default function WindowFrame({ win }: { win: WindowState }) {
           <button
             className={`${btn} hover:bg-black/10`}
             onClick={() => toggleMaximize(win.id)}
-            aria-label="Maximize"
+            aria-label={t('aria.maximize')}
             tabIndex={-1}
           >
             {win.maximized ? (
@@ -248,7 +250,7 @@ export default function WindowFrame({ win }: { win: WindowState }) {
           <button
             className={`${btn} hover:bg-[#e81123] hover:text-white`}
             onClick={handleClose}
-            aria-label="Close"
+            aria-label={t('aria.close')}
             tabIndex={-1}
           >
             <CloseIcon className="size-[10px]" />

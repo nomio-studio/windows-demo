@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import { useT } from '../core/i18n'
 import type { AppProps } from '../core/types'
 import { useWindowsStore } from '../core/store/windows'
 
@@ -21,6 +22,7 @@ export default function NotepadApp({ windowId, launch }: AppProps) {
   const [about, setAbout] = useState(false)
   const [pos, setPos] = useState({ ln: 1, col: 1 })
   const taRef = useRef<HTMLTextAreaElement>(null)
+  const t = useT()
 
   const updatePos = () => {
     const ta = taRef.current
@@ -32,58 +34,58 @@ export default function NotepadApp({ windowId, launch }: AppProps) {
 
   const menus: Menu[] = [
     {
-      name: 'File',
+      name: 'note.file',
       items: [
-        { label: 'New', onClick: () => setText('') },
-        { label: 'Open…', disabled: true },
-        { label: 'Save', disabled: true },
-        { label: 'Save As…', disabled: true },
+        { label: 'note.new', onClick: () => setText('') },
+        { label: 'note.open', disabled: true },
+        { label: 'note.save', disabled: true },
+        { label: 'note.saveAs', disabled: true },
         'sep',
-        { label: 'Page Setup…', disabled: true },
-        { label: 'Print…', disabled: true },
+        { label: 'note.pageSetup', disabled: true },
+        { label: 'note.print', disabled: true },
         'sep',
-        { label: 'Exit', onClick: () => closeWindow(windowId) },
+        { label: 'note.exit', onClick: () => closeWindow(windowId) },
       ],
     },
     {
-      name: 'Edit',
+      name: 'note.edit',
       items: [
-        { label: 'Undo', disabled: true },
+        { label: 'note.undo', disabled: true },
         'sep',
-        { label: 'Cut', disabled: true },
-        { label: 'Copy', disabled: true },
-        { label: 'Paste', disabled: true },
-        { label: 'Delete', disabled: true },
+        { label: 'note.cut', disabled: true },
+        { label: 'note.copy', disabled: true },
+        { label: 'note.paste', disabled: true },
+        { label: 'note.delete', disabled: true },
         'sep',
         {
-          label: 'Select All',
+          label: 'note.selectAll',
           onClick: () => taRef.current?.select(),
         },
       ],
     },
     {
-      name: 'Format',
+      name: 'note.format',
       items: [
-        { label: 'Word Wrap', checked: wrap, onClick: () => setWrap((v) => !v) },
-        { label: 'Font…', disabled: true },
+        { label: 'note.wrap', checked: wrap, onClick: () => setWrap((v) => !v) },
+        { label: 'note.font', disabled: true },
       ],
     },
     {
-      name: 'View',
+      name: 'note.view',
       items: [
         {
-          label: 'Status Bar',
+          label: 'note.statusBar',
           checked: statusBar,
           onClick: () => setStatusBar((v) => !v),
         },
       ],
     },
     {
-      name: 'Help',
+      name: 'note.help',
       items: [
-        { label: 'View Help', disabled: true },
+        { label: 'note.viewHelp', disabled: true },
         'sep',
-        { label: 'About Notepad', onClick: () => setAbout(true) },
+        { label: 'note.about', onClick: () => setAbout(true) },
       ],
     },
   ]
@@ -101,7 +103,7 @@ export default function NotepadApp({ windowId, launch }: AppProps) {
               onClick={() => setOpenMenu(openMenu === m.name ? null : m.name)}
               onMouseEnter={() => openMenu && setOpenMenu(m.name)}
             >
-              {m.name}
+              {t(m.name)}
             </button>
             {openMenu === m.name && (
               <div className="anim-menu absolute left-0 top-full z-20 w-44 border border-[#a0a0a0] bg-[#f2f2f2] py-[3px] shadow-[0_4px_12px_rgba(0,0,0,0.3)]">
@@ -119,7 +121,7 @@ export default function NotepadApp({ windowId, launch }: AppProps) {
                       }}
                     >
                       {it.checked ? '✓ ' : ''}
-                      {it.label}
+                      {t(it.label)}
                     </button>
                   ),
                 )}
@@ -155,7 +157,7 @@ export default function NotepadApp({ windowId, launch }: AppProps) {
       {statusBar && (
         <div className="flex h-6 shrink-0 items-center justify-end border-t border-[#e0e0e0] px-4 text-[11.5px] text-[#555]">
           <span>
-            Ln {pos.ln}, Col {pos.col}
+            {t('note.pos', { ln: pos.ln, col: pos.col })}
           </span>
           <span className="mx-4 h-4 w-px bg-[#d0d0d0]" />
           <span>100%</span>
@@ -172,13 +174,13 @@ export default function NotepadApp({ windowId, launch }: AppProps) {
           <div className="w-72 border border-[#888] bg-[#f0f0f0] p-4 shadow-xl">
             <p className="mb-1 text-[14px] font-semibold">Notepad</p>
             <p className="mb-3 text-[12px] text-[#444]">
-              Windows 10 web demo — a faithful recreation built with React.
+              {t('note.aboutText')}
             </p>
             <button
               className="w-full border border-[#7a7a7a] bg-[#e1e1e1] py-1 text-[12px] hover:bg-[#e5f3ff]"
               onClick={() => setAbout(false)}
             >
-              OK
+              {t('note.ok')}
             </button>
           </div>
         </div>

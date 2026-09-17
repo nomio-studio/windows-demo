@@ -1,5 +1,6 @@
 import type { MouseEvent as ReactMouseEvent } from 'react'
 import { getApp } from '../core/registry'
+import { localeShort, useLocale, useT } from '../core/i18n'
 import { useSystemStore } from '../core/store/system'
 import { useWindowsStore } from '../core/store/windows'
 import { taskbarPins } from '../config/shell'
@@ -31,6 +32,8 @@ export default function Taskbar({ onMenu }: Props) {
   const toggleFlyout = useSystemStore((s) => s.toggleFlyout)
   const wifiOn = useSystemStore((s) => s.wifiOn)
   const now = useClock()
+  const t = useT()
+  const locale = useLocale()
 
   const runningIds = [...new Set(windows.map((w) => w.appId))]
   const items = [
@@ -53,7 +56,7 @@ export default function Taskbar({ onMenu }: Props) {
           e.stopPropagation()
           onMenu(e, 'winx')
         }}
-        aria-label="Start"
+        aria-label={t('aria.start')}
       >
         <WindowsLogo className="size-5 text-white hover:text-[#4da6e8]" />
       </button>
@@ -62,7 +65,7 @@ export default function Taskbar({ onMenu }: Props) {
       <button
         className={`flex w-11 items-center justify-center sm:hidden ${hover}`}
         onClick={() => toggleFlyout('search')}
-        aria-label="Search"
+        aria-label={t('aria.search')}
       >
         <SearchIcon className="size-5" />
       </button>
@@ -74,14 +77,14 @@ export default function Taskbar({ onMenu }: Props) {
         onContextMenu={(e) => e.stopPropagation()}
       >
         <SearchIcon className="size-4 shrink-0 text-[#3c3c3c]" />
-        <span className="truncate">Type here to search</span>
+        <span className="truncate">{t('shell.search')}</span>
       </button>
 
       {/* Task view */}
       <button
         className={`hidden w-11 items-center justify-center sm:flex ${hover}`}
         onClick={() => toggleFlyout('search')}
-        aria-label="Task view"
+        aria-label={t('aria.taskview')}
       >
         <TaskViewIcon className="size-5" />
       </button>
@@ -104,7 +107,7 @@ export default function Taskbar({ onMenu }: Props) {
               onClick={() =>
                 open ? toggleTaskbar(appWins[0].id) : openApp(appId)
               }
-              title={app.title}
+              title={t(app.title)}
             >
               <Icon className="size-6" />
               <span
@@ -124,7 +127,7 @@ export default function Taskbar({ onMenu }: Props) {
             flyout === 'trayOverflow' ? 'bg-white/10' : ''
           }`}
           onClick={() => toggleFlyout('trayOverflow')}
-          aria-label="Show hidden icons"
+          aria-label={t('aria.showHidden')}
         >
           <ChevronUp className="size-3.5" />
         </button>
@@ -133,7 +136,7 @@ export default function Taskbar({ onMenu }: Props) {
             wifiOn ? '' : 'opacity-40'
           } ${flyout === 'network' ? 'bg-white/10' : ''}`}
           onClick={() => toggleFlyout('network')}
-          aria-label="Network"
+          aria-label={t('aria.network')}
         >
           <WifiIcon className="size-4" />
         </button>
@@ -142,9 +145,18 @@ export default function Taskbar({ onMenu }: Props) {
             flyout === 'volume' ? 'bg-white/10' : ''
           }`}
           onClick={() => toggleFlyout('volume')}
-          aria-label="Volume"
+          aria-label={t('aria.volume')}
         >
           <VolumeIcon className="size-4" />
+        </button>
+        <button
+          className={`hidden w-8 items-center justify-center text-[11px] sm:flex ${hover} ${
+            flyout === 'language' ? 'bg-white/10' : ''
+          }`}
+          onClick={() => toggleFlyout('language')}
+          aria-label={t('aria.language')}
+        >
+          {localeShort(locale)}
         </button>
         <button
           className={`flex w-auto flex-col items-center justify-center px-2 text-[11.5px] leading-[1.2] sm:w-[76px] sm:px-0 ${hover} ${
@@ -152,15 +164,15 @@ export default function Taskbar({ onMenu }: Props) {
           }`}
           onClick={() => toggleFlyout('calendar')}
         >
-          <span>{formatTime(now)}</span>
-          <span className="hidden sm:block">{formatDate(now)}</span>
+          <span>{formatTime(now, locale)}</span>
+          <span className="hidden sm:block">{formatDate(now, locale)}</span>
         </button>
         <button
           className={`flex w-9 items-center justify-center border-r border-white/25 ${hover} ${
             flyout === 'actionCenter' ? 'bg-white/10' : ''
           }`}
           onClick={() => toggleFlyout('actionCenter')}
-          aria-label="Action center"
+          aria-label={t('aria.actionCenter')}
         >
           <ActionCenterIcon className="size-[18px]" />
         </button>
@@ -168,8 +180,8 @@ export default function Taskbar({ onMenu }: Props) {
         <button
           className="w-[6px] hover:bg-white/20"
           onClick={minimizeAll}
-          aria-label="Show desktop"
-          title="Show desktop"
+          aria-label={t('aria.showDesktop')}
+          title={t('aria.showDesktop')}
         />
       </div>
     </div>

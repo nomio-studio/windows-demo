@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { useT } from '../core/i18n'
 import { useSystemStore } from '../core/store/system'
 import { WindowsLogo } from './icons'
 
@@ -39,6 +40,7 @@ export function BootScreen() {
 export function PowerScreen() {
   const phase = useSystemStore((s) => s.phase)
   const setPhase = useSystemStore((s) => s.setPhase)
+  const t = useT()
 
   useEffect(() => {
     if (phase !== 'shutdown' && phase !== 'restart') return
@@ -52,7 +54,7 @@ export function PowerScreen() {
       <div
         className="h-full w-full cursor-pointer bg-black"
         onClick={() => setPhase('boot')}
-        title="Click to power on"
+        title={t('boot.powerOn')}
       />
     )
   }
@@ -61,7 +63,7 @@ export function PowerScreen() {
     <div className="flex h-full flex-col items-center justify-center bg-[#0067b8]">
       <DotsSpinner className="mb-5" />
       <p className="text-[26px] font-light text-white">
-        {phase === 'restart' ? 'Restarting' : 'Shutting down'}
+        {phase === 'restart' ? t('boot.restarting') : t('boot.shuttingDown')}
       </p>
     </div>
   )

@@ -34,7 +34,7 @@ import {
 export function registerApps(): void {
   registerApp({
     id: 'explorer',
-    title: 'File Explorer',
+    title: 'app.explorer',
     icon: FolderIcon,
     component: ExplorerApp,
     defaultSize: { width: 960, height: 600 },
@@ -42,7 +42,7 @@ export function registerApps(): void {
   })
   registerApp({
     id: 'edge',
-    title: 'Microsoft Edge',
+    title: 'app.edge',
     icon: EdgeIcon,
     component: EdgeApp,
     defaultSize: { width: 1100, height: 680 },
@@ -51,7 +51,7 @@ export function registerApps(): void {
   })
   registerApp({
     id: 'notepad',
-    title: 'Notepad',
+    title: 'app.notepad',
     icon: NotepadIcon,
     component: NotepadApp,
     defaultSize: { width: 720, height: 480 },
@@ -59,7 +59,7 @@ export function registerApps(): void {
   })
   registerApp({
     id: 'calculator',
-    title: 'Calculator',
+    title: 'app.calculator',
     icon: CalculatorIcon,
     component: CalculatorApp,
     defaultSize: { width: 340, height: 520 },
@@ -68,7 +68,7 @@ export function registerApps(): void {
   })
   registerApp({
     id: 'settings',
-    title: 'Settings',
+    title: 'app.settings',
     icon: SettingsIcon,
     component: SettingsApp,
     defaultSize: { width: 900, height: 600 },
@@ -79,7 +79,7 @@ export function registerApps(): void {
   // Modern-style placeholder apps (Store, Mail, Photos, …)
   const modern = (
     id: string,
-    title: string,
+    title: AppDefinition['title'],
     icon: AppDefinition['icon'],
     color: string,
   ): AppDefinition => ({
@@ -93,21 +93,21 @@ export function registerApps(): void {
     singleInstance: true,
   })
 
-  registerApp(modern('store', 'Microsoft Store', StoreIcon, '#0078D7'))
-  registerApp(modern('photos', 'Photos', PhotosIcon, '#7A5EA8'))
-  registerApp(modern('mail', 'Mail', MailIcon, '#0F6CBD'))
-  registerApp(modern('calendar', 'Calendar', CalendarIcon, '#D83B01'))
-  registerApp(modern('weather', 'Weather', WeatherIcon, '#0078D7'))
-  registerApp(modern('xbox', 'Xbox', XboxIcon, '#107C10'))
-  registerApp(modern('groove', 'Groove Music', MusicIcon, '#D83B01'))
-  registerApp(modern('movies', 'Movies & TV', MoviesIcon, '#5B2D8E'))
-  registerApp(modern('camera', 'Camera', CameraIcon, '#4A4A4A'))
-  registerApp(modern('maps', 'Maps', MapsIcon, '#107C10'))
+  registerApp(modern('store', 'app.store', StoreIcon, '#0078D7'))
+  registerApp(modern('photos', 'app.photos', PhotosIcon, '#7A5EA8'))
+  registerApp(modern('mail', 'app.mail', MailIcon, '#0F6CBD'))
+  registerApp(modern('calendar', 'app.calendar', CalendarIcon, '#D83B01'))
+  registerApp(modern('weather', 'app.weather', WeatherIcon, '#0078D7'))
+  registerApp(modern('xbox', 'app.xbox', XboxIcon, '#107C10'))
+  registerApp(modern('groove', 'app.groove', MusicIcon, '#D83B01'))
+  registerApp(modern('movies', 'app.movies', MoviesIcon, '#5B2D8E'))
+  registerApp(modern('camera', 'app.camera', CameraIcon, '#4A4A4A'))
+  registerApp(modern('maps', 'app.maps', MapsIcon, '#107C10'))
 
   // Generic fallback used by start-list extras / tray overflow.
   registerApp({
     id: 'modern',
-    title: 'App',
+    title: 'app.modern',
     icon: AppsIcon,
     component: ModernApp,
     defaultSize: { width: 560, height: 420 },

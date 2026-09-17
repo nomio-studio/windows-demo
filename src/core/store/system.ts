@@ -10,6 +10,7 @@ export type Flyout =
   | 'volume'
   | 'network'
   | 'trayOverflow'
+  | 'language'
   | null
 
 /** OS-level power/session state machine. */

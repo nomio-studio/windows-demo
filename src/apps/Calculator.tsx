@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useT } from '../core/i18n'
 
 type Op = '+' | '−' | '×' | '÷'
 
@@ -23,14 +24,15 @@ const compute = (a: number, b: number, op: Op): number | null => {
   }
 }
 
-const fmt = (n: number) => {
-  if (!isFinite(n)) return 'Error'
+const fmt = (n: number, err: string) => {
+  if (!isFinite(n)) return err
   const s = Math.abs(n) >= 1e12 ? n.toExponential(6) : String(+n.toFixed(10))
   return s
 }
 
 /** Windows 10 standard calculator (fully functional). */
 export default function CalculatorApp() {
+  const t = useT()
   const [s, setS] = useState<Calc>({
     cur: '0',
     acc: null,
@@ -51,8 +53,8 @@ export default function CalculatorApp() {
 
   const unary = (f: (n: number) => number | null) => {
     const v = f(parseFloat(s.cur))
-    if (v === null || !isFinite(v)) set({ err: true, cur: 'Cannot divide by zero' })
-    else set({ cur: fmt(v), fresh: true })
+    if (v === null || !isFinite(v)) set({ err: true, cur: t('calc.divZero') })
+    else set({ cur: fmt(v, t('calc.error')), fresh: true })
   }
 
   const applyOp = (op: Op) => {
@@ -61,10 +63,10 @@ export default function CalculatorApp() {
     if (s.acc !== null && s.op && !s.fresh) {
       const r = compute(s.acc, v, s.op)
       if (r === null) {
-        set({ err: true, cur: 'Cannot divide by zero' })
+        set({ err: true, cur: t('calc.divZero') })
         return
       }
-      set({ acc: r, op, fresh: true, cur: fmt(r) })
+      set({ acc: r, op, fresh: true, cur: fmt(r, t('calc.error')) })
     } else {
       set({ acc: v, op, fresh: true })
     }
@@ -73,12 +75,12 @@ export default function CalculatorApp() {
   const equals = () => {
     if (s.err || s.op === null || s.acc === null) return
     const r = compute(s.acc, parseFloat(s.cur), s.op)
-    if (r === null) set({ err: true, cur: 'Cannot divide by zero' })
-    else set({ cur: fmt(r), acc: null, op: null, fresh: true })
+    if (r === null) set({ err: true, cur: t('calc.divZero') })
+    else set({ cur: fmt(r, t('calc.error')), acc: null, op: null, fresh: true })
   }
 
   const history =
-    s.acc !== null && s.op ? `${fmt(s.acc)} ${s.op}` : ''
+    s.acc !== null && s.op ? `${fmt(s.acc, t('calc.error'))} ${s.op}` : ''
 
   const btn = (label: string, fn: () => void, kind: 'num' | 'op' | 'eq' = 'num') => (
     <button

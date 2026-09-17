@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { LOCALES, useI18n, useT } from '../core/i18n'
+import type { MessageKey } from '../core/i18n/en'
 import type { AppProps } from '../core/types'
 import { useSystemStore } from '../core/store/system'
 import { wallpapers } from '../config/shell'
@@ -22,24 +24,25 @@ import type { IconType } from '../core/types'
 
 interface Category {
   id: string
-  name: string
-  desc: string
+  /** Name + description — message keys resolved via `t()`. */
+  name: MessageKey
+  desc: MessageKey
   icon: IconType
   implemented?: boolean
 }
 
 const CATEGORIES: Category[] = [
-  { id: 'system', name: 'System', desc: 'Display, sound, notifications, power', icon: MonitorIcon, implemented: true },
-  { id: 'devices', name: 'Devices', desc: 'Bluetooth, printers, mouse', icon: DevicesIcon },
-  { id: 'network', name: 'Network & Internet', desc: 'Wi-Fi, airplane mode, VPN', icon: NetworkIcon },
-  { id: 'personalization', name: 'Personalization', desc: 'Background, lock screen, colors', icon: PaintIcon, implemented: true },
-  { id: 'apps', name: 'Apps', desc: 'Uninstall, defaults, optional features', icon: AppsIcon },
-  { id: 'accounts', name: 'Accounts', desc: 'Your accounts, email, sync, work', icon: UserIcon },
-  { id: 'time', name: 'Time & Language', desc: 'Speech, region, date', icon: TimeIcon },
-  { id: 'gaming', name: 'Gaming', desc: 'Game bar, captures, broadcasting', icon: GamepadIcon },
-  { id: 'ease', name: 'Ease of Access', desc: 'Narrator, magnifier, high contrast', icon: EaseIcon },
-  { id: 'privacy', name: 'Privacy', desc: 'Location, camera, microphone', icon: PrivacyIcon },
-  { id: 'update', name: 'Update & Security', desc: 'Windows Update, recovery, backup', icon: UpdateIcon },
+  { id: 'system', name: 'set.cat.system.name', desc: 'set.cat.system.desc', icon: MonitorIcon, implemented: true },
+  { id: 'devices', name: 'set.cat.devices.name', desc: 'set.cat.devices.desc', icon: DevicesIcon },
+  { id: 'network', name: 'set.cat.network.name', desc: 'set.cat.network.desc', icon: NetworkIcon },
+  { id: 'personalization', name: 'set.cat.personalization.name', desc: 'set.cat.personalization.desc', icon: PaintIcon, implemented: true },
+  { id: 'apps', name: 'set.cat.apps.name', desc: 'set.cat.apps.desc', icon: AppsIcon },
+  { id: 'accounts', name: 'set.cat.accounts.name', desc: 'set.cat.accounts.desc', icon: UserIcon },
+  { id: 'time', name: 'set.cat.time.name', desc: 'set.cat.time.desc', icon: TimeIcon, implemented: true },
+  { id: 'gaming', name: 'set.cat.gaming.name', desc: 'set.cat.gaming.desc', icon: GamepadIcon },
+  { id: 'ease', name: 'set.cat.ease.name', desc: 'set.cat.ease.desc', icon: EaseIcon },
+  { id: 'privacy', name: 'set.cat.privacy.name', desc: 'set.cat.privacy.desc', icon: PrivacyIcon },
+  { id: 'update', name: 'set.cat.update.name', desc: 'set.cat.update.desc', icon: UpdateIcon },
 ]
 
 /** Settings app: category grid + Display and Personalization pages. */
@@ -52,6 +55,9 @@ export default function SettingsApp({ launch }: AppProps) {
   const toggleQuick = useSystemStore((s) => s.toggleQuickAction)
   const wallpaper = useSystemStore((s) => s.wallpaper)
   const setWallpaper = useSystemStore((s) => s.setWallpaper)
+  const locale = useI18n((s) => s.locale)
+  const setLocale = useI18n((s) => s.setLocale)
+  const t = useT()
 
   const cat = CATEGORIES.find((c) => c.id === page)
 
@@ -63,13 +69,13 @@ export default function SettingsApp({ launch }: AppProps) {
           className="flex size-7 items-center justify-center hover:bg-[#e5f3ff] disabled:text-[#aaa]"
           onClick={() => setPage('home')}
           disabled={page === 'home'}
-          aria-label="Back"
+          aria-label={t('aria.back')}
         >
           <BackIcon className="size-4" />
         </button>
         <SettingsIcon className="size-4 text-[#0078d7]" />
         <span className="text-[15px]">
-          Settings{cat ? `  ›  ${cat.name}` : ''}
+          {t('app.settings')}{cat ? `  ›  ${t(cat.name)}` : ''}
         </span>
       </div>
 
@@ -85,10 +91,10 @@ export default function SettingsApp({ launch }: AppProps) {
                 <c.icon className="size-9 shrink-0 text-[#0078d7]" />
                 <span>
                   <span className="block text-[13.5px] font-medium">
-                    {c.name}
+                    {t(c.name)}
                   </span>
                   <span className="block text-[11.5px] text-[#777]">
-                    {c.desc}
+                    {t(c.desc)}
                   </span>
                 </span>
               </button>
@@ -110,7 +116,7 @@ export default function SettingsApp({ launch }: AppProps) {
                 onClick={() => setPage(c.id)}
               >
                 <c.icon className="size-4 shrink-0 text-[#555]" />
-                {c.name}
+                {t(c.name)}
               </button>
             ))}
           </div>
@@ -119,22 +125,22 @@ export default function SettingsApp({ launch }: AppProps) {
           <div key={page} className="anim-fade min-w-0 flex-1 overflow-y-auto p-6">
             {page === 'system' && (
               <div className="max-w-[520px]">
-                <h2 className="mb-1 text-[20px] font-light">Display</h2>
+                <h2 className="mb-1 text-[20px] font-light">{t('set.display')}</h2>
                 <p className="mb-6 text-[12.5px] text-[#777]">
-                  Windows HD Color · Advanced display settings
+                  {t('set.display.sub')}
                 </p>
                 <div className="mb-6">
                   <div className="mb-2 flex items-center justify-between">
-                    <span className="text-[13.5px]">Brightness</span>
+                    <span className="text-[13.5px]">{t('set.brightness')}</span>
                     <span className="text-[12px] text-[#777]">{brightness}%</span>
                   </div>
                   <Slider value={brightness} onChange={setBrightness} />
                 </div>
                 <div className="flex items-center justify-between border-t border-[#eee] py-4">
                   <div>
-                    <p className="text-[13.5px]">Night light</p>
+                    <p className="text-[13.5px]">{t('set.nightlight')}</p>
                     <p className="text-[12px] text-[#777]">
-                      Use warmer colors to help you sleep
+                      {t('set.nightlight.desc')}
                     </p>
                   </div>
                   <Toggle
@@ -147,9 +153,9 @@ export default function SettingsApp({ launch }: AppProps) {
 
             {page === 'personalization' && (
               <div className="max-w-[560px]">
-                <h2 className="mb-4 text-[20px] font-light">Background</h2>
+                <h2 className="mb-4 text-[20px] font-light">{t('set.background')}</h2>
                 <p className="mb-3 text-[13px] text-[#555]">
-                  Choose your desktop background:
+                  {t('set.background.desc')}
                 </p>
                 <div className="grid grid-cols-3 gap-3">
                   {wallpapers.map((w, i) => (
@@ -164,7 +170,7 @@ export default function SettingsApp({ launch }: AppProps) {
                     >
                       <div className="h-20 w-full" style={w.style} />
                       <p className="mt-1 truncate text-center text-[11.5px]">
-                        {w.name}
+                        {t(w.name)}
                       </p>
                     </button>
                   ))}
@@ -172,11 +178,52 @@ export default function SettingsApp({ launch }: AppProps) {
               </div>
             )}
 
+            {page === 'time' && (
+              <div className="max-w-[520px]">
+                <h2 className="mb-1 text-[20px] font-light">
+                  {t('set.time.region')}
+                </h2>
+                <p className="mb-6 text-[12.5px] text-[#777]">
+                  {t('set.time.displayLang')}
+                </p>
+                <div className="border border-[#e0e0e0]">
+                  {LOCALES.map((l) => (
+                    <button
+                      key={l.id}
+                      className={`flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-[#e5f3ff] ${
+                        locale === l.id ? 'bg-[#cce8ff]' : ''
+                      }`}
+                      onClick={() => setLocale(l.id)}
+                    >
+                      <span
+                        className={`flex size-4 shrink-0 items-center justify-center rounded-full border ${
+                          locale === l.id ? 'border-[#0078d7]' : 'border-[#999]'
+                        }`}
+                      >
+                        {locale === l.id && (
+                          <span className="size-2 rounded-full bg-[#0078d7]" />
+                        )}
+                      </span>
+                      <span>
+                        <span className="block text-[13.5px]">{l.name}</span>
+                        <span className="block text-[11.5px] text-[#777]">
+                          {l.sub}
+                        </span>
+                      </span>
+                    </button>
+                  ))}
+                </div>
+                <p className="mt-3 text-[12px] text-[#777]">
+                  {t('set.time.note')}
+                </p>
+              </div>
+            )}
+
             {cat && !cat.implemented && (
               <div className="flex h-full flex-col items-center justify-center text-[#888]">
                 <cat.icon className="mb-3 size-14 opacity-40" />
                 <p className="text-[14px]">
-                  {cat.name} isn't part of this demo.
+                  {t('set.notImpl', { name: t(cat.name) })}
                 </p>
               </div>
             )}

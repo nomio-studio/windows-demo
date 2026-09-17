@@ -1,8 +1,11 @@
+import { LOCALES, useI18n, useT } from '../core/i18n'
 import { useSystemStore } from '../core/store/system'
+import type { IconType } from '../core/types'
 import { useWindowsStore } from '../core/store/windows'
 import { Slider, Toggle } from './ui'
 import {
   BluetoothIcon,
+  CheckIcon,
   CloudIcon,
   ShieldIcon,
   VolumeIcon,
@@ -27,30 +30,70 @@ export default function TrayFlyouts() {
   if (flyout === 'trayOverflow') return <Overflow />
   if (flyout === 'volume') return <Volume />
   if (flyout === 'network') return <Network />
+  if (flyout === 'language') return <Language />
   return null
 }
 
 function Overflow() {
   const openApp = useWindowsStore((s) => s.openApp)
-  const icons = [CloudIcon, ShieldIcon, BluetoothIcon]
+  const icons: [IconType, string][] = [
+    [CloudIcon, 'app.onedrive'],
+    [ShieldIcon, 'app.winsec'],
+    [BluetoothIcon, 'app.bluetooth'],
+  ]
   return (
     <div className={`${PANEL} right-1.5 w-[170px] p-1`}>
       <div className="grid grid-cols-4">
-        {icons.map((Icon, i) => (
+        {icons.map(([Icon, title], i) => (
           <button
             key={i}
             className="flex aspect-square items-center justify-center hover:bg-white/10"
-            onClick={() =>
-              openApp('modern', {
-                title: ['OneDrive', 'Windows Security', 'Bluetooth'][i],
-                icon: Icon,
-              })
-            }
+            onClick={() => openApp('modern', { title, icon: Icon })}
           >
             <Icon className="size-4" />
           </button>
         ))}
       </div>
+    </div>
+  )
+}
+
+/** Input-language flyout — the tray ENG/中 indicator's panel. */
+function Language() {
+  const locale = useI18n((s) => s.locale)
+  const setLocale = useI18n((s) => s.setLocale)
+  const openApp = useWindowsStore((s) => s.openApp)
+  const setFlyout = useSystemStore((s) => s.setFlyout)
+  const t = useT()
+  return (
+    <div className={`${PANEL} right-0 w-[300px] max-w-full py-1`}>
+      {LOCALES.map((l) => (
+        <button
+          key={l.id}
+          className="flex w-full items-center gap-2.5 px-3 py-2.5 text-left hover:bg-white/10"
+          onClick={() => {
+            setLocale(l.id)
+            setFlyout(null)
+          }}
+        >
+          <span className="w-5 shrink-0 text-center">
+            {locale === l.id && <CheckIcon className="mx-auto size-3.5" />}
+          </span>
+          <span className="flex-1">
+            <span className="block text-[13px]">{l.name}</span>
+            <span className="block text-[11px] text-white/55">{l.sub}</span>
+          </span>
+        </button>
+      ))}
+      <button
+        className="mt-1 w-full border-t border-white/10 px-4 py-2.5 text-left text-[13px] text-white/80 hover:bg-white/10"
+        onClick={() => {
+          openApp('settings', { launch: { page: 'time' } })
+          setFlyout(null)
+        }}
+      >
+        {t('lang.prefs')}
+      </button>
     </div>
   )
 }
@@ -71,6 +114,7 @@ function Network() {
   const wifiOn = useSystemStore((s) => s.wifiOn)
   const toggleWifi = useSystemStore((s) => s.toggleWifi)
   const toggleFlyout = useSystemStore((s) => s.toggleFlyout)
+  const t = useT()
   return (
     <div className={`${PANEL} right-0 max-h-[420px] w-[340px] max-w-full overflow-y-auto`}>
       <div className="flex items-center justify-between px-4 pb-1 pt-3">
@@ -88,14 +132,14 @@ function Network() {
               <span className="flex-1">
                 <span className="block text-[13px]">{n}</span>
                 <span className="block text-[11px] text-white/60">
-                  {i === 0 ? 'Connected, secured' : 'Secured'}
+                  {i === 0 ? t('net.connected') : t('net.secured')}
                 </span>
               </span>
             </button>
           ))
         ) : (
           <p className="px-4 py-3 text-[13px] text-white/60">
-            Wi-Fi is turned off.
+            {t('net.off')}
           </p>
         )}
       </div>
@@ -103,7 +147,7 @@ function Network() {
         className="w-full border-t border-white/10 px-4 py-2.5 text-left text-[13px] text-white/80 hover:bg-white/10"
         onClick={() => toggleFlyout('actionCenter')}
       >
-        Network & Internet settings
+        {t('net.settings')}
       </button>
     </div>
   )

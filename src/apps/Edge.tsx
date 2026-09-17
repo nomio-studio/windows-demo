@@ -1,3 +1,4 @@
+import { useT } from '../core/i18n'
 import {
   BackIcon,
   CloseIcon,
@@ -22,14 +23,11 @@ const SITES: { name: string; color: string; abbr: string }[] = [
   { name: 'Twitch', color: '#9146ff', abbr: 'T' },
 ]
 
-const NEWS = [
-  'Windows 10 clone built entirely in the browser',
-  'React + Tailwind recreate classic desktop UI',
-  'Local technology sector ships pixel-perfect demo',
-]
+const NEWS = ['edge.news1', 'edge.news2', 'edge.news3']
 
 /** Microsoft Edge: chrome toolbar + new-tab style start page. */
 export default function EdgeApp() {
+  const t = useT()
   const navBtn =
     'flex h-7 w-7 items-center justify-center text-[#444] hover:bg-[#e5e5e5] disabled:text-[#b8b8b8]'
 
@@ -38,7 +36,7 @@ export default function EdgeApp() {
       {/* Tab strip */}
       <div className="flex h-9 shrink-0 items-end bg-[#dee1e6] px-2">
         <div className="flex h-[30px] w-56 items-center justify-between rounded-t-md bg-white px-3">
-          <span className="truncate text-[12px]">New tab</span>
+          <span className="truncate text-[12px]">{t('edge.newTab')}</span>
           <CloseIcon className="size-2.5 text-[#666]" />
         </div>
         <button className="mb-1 ml-1 flex size-6 items-center justify-center text-[16px] text-[#666] hover:bg-white/60">
@@ -48,29 +46,29 @@ export default function EdgeApp() {
 
       {/* Toolbar */}
       <div className="flex h-10 shrink-0 items-center gap-1 border-b border-[#e0e0e0] bg-white px-2">
-        <button className={navBtn} disabled aria-label="Back">
+        <button className={navBtn} disabled aria-label={t('aria.back')}>
           <BackIcon className="size-4" />
         </button>
-        <button className={navBtn} disabled aria-label="Forward">
+        <button className={navBtn} disabled aria-label={t('aria.forward')}>
           <ForwardIcon className="size-4" />
         </button>
-        <button className={navBtn} aria-label="Refresh">
+        <button className={navBtn} aria-label={t('aria.refresh')}>
           <RefreshIcon className="size-4" />
         </button>
-        <button className={navBtn} aria-label="Home">
+        <button className={navBtn} aria-label={t('aria.home')}>
           <HomeIcon className="size-4" />
         </button>
         <div className="mx-1 flex h-7 min-w-0 flex-1 items-center gap-2 rounded-sm bg-[#f1f3f4] px-2.5 text-[12.5px] text-[#333]">
           <LockIcon className="size-3.5 shrink-0 text-[#0f9d58]" />
           <span className="truncate">https://www.bing.com</span>
         </div>
-        <button className={navBtn} aria-label="Favorites">
+        <button className={navBtn} aria-label={t('aria.favorites')}>
           <StarIcon className="size-4" />
         </button>
-        <button className={navBtn} aria-label="Hub">
+        <button className={navBtn} aria-label={t('aria.hub')}>
           <GlobeIcon className="size-4" />
         </button>
-        <button className={navBtn} aria-label="More">
+        <button className={navBtn} aria-label={t('aria.more')}>
           <DotsIcon className="size-4" />
         </button>
       </div>
@@ -82,14 +80,14 @@ export default function EdgeApp() {
           <div className="flex h-11 w-full items-center gap-3 bg-white px-4 shadow-[0_2px_8px_rgba(0,0,0,0.18)]">
             <SearchIcon className="size-4 text-[#0078d7]" />
             <input
-              placeholder="Search the web"
+              placeholder={t('edge.search')}
               className="flex-1 text-[14px] outline-none"
             />
           </div>
 
           <div className="mt-10 w-full">
             <p className="mb-2 text-[12px] font-semibold text-[#666]">
-              Top sites
+              {t('edge.topSites')}
             </p>
             <div className="grid grid-cols-4 gap-3">
               {SITES.map((s) => (
@@ -114,7 +112,7 @@ export default function EdgeApp() {
 
           <div className="mb-10 mt-10 w-full">
             <p className="mb-2 text-[12px] font-semibold text-[#666]">
-              Headlines
+              {t('edge.headlines')}
             </p>
             {NEWS.map((n) => (
               <div
@@ -123,9 +121,9 @@ export default function EdgeApp() {
               >
                 <div className="size-14 shrink-0 bg-gradient-to-br from-[#9db8d2] to-[#5a7ca8]" />
                 <div>
-                  <p className="text-[13px] font-medium">{n}</p>
+                  <p className="text-[13px] font-medium">{t(n)}</p>
                   <p className="mt-0.5 text-[11px] text-[#888]">
-                    demo.news · Just now
+                    demo.news · {t('edge.justNow')}
                   </p>
                 </div>
               </div>

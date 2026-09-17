@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react'
+import type { MessageKey } from '../core/i18n/en'
 import type { IconType } from '../core/types'
 import {
   AppsIcon,
@@ -21,13 +22,14 @@ import {
 /* ------------------------------------------------------------------ */
 
 export interface Wallpaper {
-  name: string
+  /** Display name — a message key resolved via `t()`. */
+  name: MessageKey
   style: CSSProperties
 }
 
 export const wallpapers: Wallpaper[] = [
   {
-    name: 'Windows Hero',
+    name: 'wp.hero',
     style: {
       background:
         'radial-gradient(ellipse 90% 70% at 68% 32%, rgba(80,160,240,0.75), transparent 55%),' +
@@ -36,7 +38,7 @@ export const wallpapers: Wallpaper[] = [
     },
   },
   {
-    name: 'Teal Bloom',
+    name: 'wp.teal',
     style: {
       background:
         'radial-gradient(ellipse 60% 60% at 70% 30%, rgba(120,220,200,0.5), transparent 55%),' +
@@ -45,7 +47,7 @@ export const wallpapers: Wallpaper[] = [
     },
   },
   {
-    name: 'Midnight',
+    name: 'wp.midnight',
     style: {
       background:
         'radial-gradient(ellipse 80% 60% at 60% 20%, rgba(80,80,140,0.5), transparent 55%),' +
@@ -53,7 +55,7 @@ export const wallpapers: Wallpaper[] = [
     },
   },
   {
-    name: 'Solid Blue',
+    name: 'wp.blue',
     style: { background: '#0078D7' },
   },
 ]
@@ -64,20 +66,22 @@ export const wallpapers: Wallpaper[] = [
 
 export interface DesktopIconEntry {
   id: string
-  label: string
+  /** Display label — a message key resolved via `t()`. */
+  label: MessageKey
   icon: IconType
   appId: string
   launch?: unknown
-  title?: string
+  /** Window title — a message key resolved via `t()`. */
+  title?: MessageKey
 }
 
 export const desktopIcons: DesktopIconEntry[] = [
-  { id: 'thispc', label: 'This PC', icon: ThisPCIcon, appId: 'explorer', launch: { path: ['This PC'] }, title: 'This PC' },
-  { id: 'bin', label: 'Recycle Bin', icon: RecycleBinIcon, appId: 'explorer', launch: { path: ['Recycle Bin'] }, title: 'Recycle Bin' },
-  { id: 'edge', label: 'Microsoft Edge', icon: EdgeIcon, appId: 'edge' },
-  { id: 'explorer', label: 'File Explorer', icon: FolderIcon, appId: 'explorer' },
-  { id: 'notepad', label: 'Notepad', icon: NotepadIcon, appId: 'notepad' },
-  { id: 'settings', label: 'Settings', icon: SettingsIcon, appId: 'settings' },
+  { id: 'thispc', label: 'fs.thisPC', icon: ThisPCIcon, appId: 'explorer', launch: { path: ['This PC'] }, title: 'fs.thisPC' },
+  { id: 'bin', label: 'fs.recycleBin', icon: RecycleBinIcon, appId: 'explorer', launch: { path: ['Recycle Bin'] }, title: 'fs.recycleBin' },
+  { id: 'edge', label: 'app.edge', icon: EdgeIcon, appId: 'edge' },
+  { id: 'explorer', label: 'app.explorer', icon: FolderIcon, appId: 'explorer' },
+  { id: 'notepad', label: 'app.notepad', icon: NotepadIcon, appId: 'notepad' },
+  { id: 'settings', label: 'app.settings', icon: SettingsIcon, appId: 'settings' },
 ]
 
 /* ------------------------------------------------------------------ */
@@ -98,17 +102,19 @@ export interface StartTile {
   size: TileSize
   /** Tile background; falls back to the app's accent color. */
   color?: string
-  label?: string
+  /** Label override — a message key resolved via `t()`. */
+  label?: MessageKey
 }
 
 export interface StartTileGroup {
-  name: string
+  /** Group heading — a message key resolved via `t()`. */
+  name: MessageKey
   tiles: StartTile[]
 }
 
 export const startTileGroups: StartTileGroup[] = [
   {
-    name: 'Life at a glance',
+    name: 'start.group1',
     tiles: [
       { appId: 'edge', size: 'wd', color: '#20538C' },
       { appId: 'store', size: 'md' },
@@ -119,11 +125,11 @@ export const startTileGroups: StartTileGroup[] = [
     ],
   },
   {
-    name: 'Play and explore',
+    name: 'start.group2',
     tiles: [
       { appId: 'xbox', size: 'md' },
-      { appId: 'groove', size: 'md', label: 'Groove Music' },
-      { appId: 'movies', size: 'md', label: 'Movies & TV' },
+      { appId: 'groove', size: 'md', label: 'app.groove' },
+      { appId: 'movies', size: 'md', label: 'app.movies' },
       { appId: 'calculator', size: 'sm' },
       { appId: 'notepad', size: 'sm' },
       { appId: 'settings', size: 'md' },
@@ -135,30 +141,33 @@ export const startTileGroups: StartTileGroup[] = [
 
 /** Extra names shown in the start-menu app list (open as placeholders). */
 export interface StartExtra {
-  name: string
+  /** Display name — a message key resolved via `t()`. */
+  name: MessageKey
   icon: IconType
   color: string
 }
 
 export const startExtras: StartExtra[] = [
-  { name: '3D Viewer', icon: AppsIcon, color: '#7A5EA8' },
-  { name: 'Paint 3D', icon: PaintIcon, color: '#5B2D8E' },
-  { name: 'Sticky Notes', icon: StickyNoteIcon, color: '#E8B93E' },
-  { name: 'Voice Recorder', icon: MicIcon, color: '#4A4A4A' },
+  { name: 'app.x3dviewer', icon: AppsIcon, color: '#7A5EA8' },
+  { name: 'app.paint3d', icon: PaintIcon, color: '#5B2D8E' },
+  { name: 'app.sticky', icon: StickyNoteIcon, color: '#E8B93E' },
+  { name: 'app.voicerec', icon: MicIcon, color: '#4A4A4A' },
 ]
 
 /** Folder shortcuts on the start-menu side rail. */
 export interface RailItem {
   id: string
-  label: string
+  /** Display label — a message key resolved via `t()`. */
+  label: MessageKey
   icon: IconType
   appId: string
   launch?: unknown
-  title?: string
+  /** Window title — a message key resolved via `t()`. */
+  title?: MessageKey
 }
 
 export const railItems: RailItem[] = [
-  { id: 'documents', label: 'Documents', icon: FileIcon, appId: 'explorer', launch: { path: ['Quick access', 'Documents'] }, title: 'Documents' },
-  { id: 'pictures', label: 'Pictures', icon: PhotosIcon, appId: 'explorer', launch: { path: ['Quick access', 'Pictures'] }, title: 'Pictures' },
-  { id: 'settings', label: 'Settings', icon: SettingsIcon, appId: 'settings' },
+  { id: 'documents', label: 'start.rail.documents', icon: FileIcon, appId: 'explorer', launch: { path: ['Quick access', 'Documents'] }, title: 'fs.documents' },
+  { id: 'pictures', label: 'start.rail.pictures', icon: PhotosIcon, appId: 'explorer', launch: { path: ['Quick access', 'Pictures'] }, title: 'fs.pictures' },
+  { id: 'settings', label: 'app.settings', icon: SettingsIcon, appId: 'settings' },
 ]

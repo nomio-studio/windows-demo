@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { useLocale, useT } from '../core/i18n'
 import { listApps, getApp } from '../core/registry'
 import { useSystemStore } from '../core/store/system'
 import { useWindowsStore } from '../core/store/windows'
@@ -32,6 +33,8 @@ export default function StartMenu() {
   const openApp = useWindowsStore((s) => s.openApp)
   const setFlyout = useSystemStore((s) => s.setFlyout)
   const setPhase = useSystemStore((s) => s.setPhase)
+  const t = useT()
+  const locale = useLocale()
   const [expanded, setExpanded] = useState(false)
   const [powerOpen, setPowerOpen] = useState(false)
 
@@ -39,7 +42,7 @@ export default function StartMenu() {
     const entries: AppEntry[] = [
       ...listApps().map((a) => ({
         key: a.id,
-        name: a.title,
+        name: t(a.title),
         icon: a.icon,
         color: a.color,
         open: () => {
@@ -49,7 +52,7 @@ export default function StartMenu() {
       })),
       ...startExtras.map((x) => ({
         key: `x-${x.name}`,
-        name: x.name,
+        name: t(x.name),
         icon: x.icon,
         color: x.color,
         open: () => {
@@ -61,7 +64,7 @@ export default function StartMenu() {
           setFlyout(null)
         },
       })),
-    ].sort((a, b) => a.name.localeCompare(b.name))
+    ].sort((a, b) => a.name.localeCompare(b.name, locale))
 
     const map = new Map<string, AppEntry[]>()
     for (const e of entries) {
@@ -69,7 +72,7 @@ export default function StartMenu() {
       map.set(letter, [...(map.get(letter) ?? []), e])
     }
     return [...map.entries()].sort(([a], [b]) => a.localeCompare(b))
-  }, [openApp, setFlyout])
+  }, [openApp, setFlyout, t, locale])
 
   const railBtn = `flex h-11 items-center gap-3 px-3.5 text-left text-[13px] hover:bg-white/10`
   const railLabel = `whitespace-nowrap ${expanded ? '' : 'hidden'}`
@@ -87,12 +90,12 @@ export default function StartMenu() {
       >
         <button className={railBtn} onClick={() => setExpanded((v) => !v)}>
           <HamburgerIcon className="size-4 shrink-0" />
-          <span className={railLabel}>START</span>
+          <span className={railLabel}>{t('start.start')}</span>
         </button>
         <div className="flex flex-col pb-1.5">
           <button className={railBtn}>
             <AvatarIcon className="size-7 shrink-0 rounded-full" />
-            <span className={railLabel}>User</span>
+            <span className={railLabel}>{t('lock.user')}</span>
           </button>
           {railItems.map((r) => (
             <button
@@ -104,7 +107,7 @@ export default function StartMenu() {
               }}
             >
               <r.icon className="size-5 shrink-0" />
-              <span className={railLabel}>{r.label}</span>
+              <span className={railLabel}>{t(r.label)}</span>
             </button>
           ))}
           <div className="relative">
@@ -113,14 +116,14 @@ export default function StartMenu() {
               onClick={() => setPowerOpen((v) => !v)}
             >
               <PowerIcon className="size-5 shrink-0" />
-              <span className={railLabel}>Power</span>
+              <span className={railLabel}>{t('power.power')}</span>
             </button>
             {powerOpen && (
               <div className="anim-menu absolute bottom-11 left-1 z-10 w-40 border border-black/60 bg-[#2b2b2b] py-1 shadow-xl">
                 {[
-                  { label: 'Sleep', phase: 'lock' as const },
-                  { label: 'Shut down', phase: 'shutdown' as const },
-                  { label: 'Restart', phase: 'restart' as const },
+                  { label: 'power.sleep', phase: 'lock' as const },
+                  { label: 'power.shutdown', phase: 'shutdown' as const },
+                  { label: 'power.restart', phase: 'restart' as const },
                 ].map((p) => (
                   <button
                     key={p.label}
@@ -130,7 +133,7 @@ export default function StartMenu() {
                       setPhase(p.phase)
                     }}
                   >
-                    {p.label}
+                    {t(p.label)}
                   </button>
                 ))}
               </div>
@@ -174,28 +177,28 @@ export default function StartMenu() {
         {startTileGroups.map((g) => (
           <div key={g.name} className="mb-4">
             <div className="mb-2 mt-1 px-0.5 text-[12px] text-white/70">
-              {g.name}
+              {t(g.name)}
             </div>
             <div className="grid auto-rows-[54px] grid-cols-[repeat(4,54px)] gap-1.5 [grid-auto-flow:dense]">
-              {g.tiles.map((t, i) => {
-                const app = getApp(t.appId)
+              {g.tiles.map((tile, i) => {
+                const app = getApp(tile.appId)
                 const Icon = app.icon
                 return (
                   <button
-                    key={`${t.appId}-${i}`}
-                    className={`anim-tile-in group relative flex items-center justify-center ${TILE_SPAN[t.size]} outline outline-1 outline-transparent transition-transform hover:outline-white/50 active:scale-95`}
+                    key={`${tile.appId}-${i}`}
+                    className={`anim-tile-in group relative flex items-center justify-center ${TILE_SPAN[tile.size]} outline outline-1 outline-transparent transition-transform hover:outline-white/50 active:scale-95`}
                     style={{
-                      background: t.color ?? app.color ?? '#0078D7',
+                      background: tile.color ?? app.color ?? '#0078D7',
                       animationDelay: `${i * 30}ms`,
                     }}
                     onClick={() => {
-                      openApp(t.appId)
+                      openApp(tile.appId)
                       setFlyout(null)
                     }}
                   >
-                    <Icon className={`${TILE_ICON[t.size]} text-white`} />
+                    <Icon className={`${TILE_ICON[tile.size]} text-white`} />
                     <span className="absolute bottom-1 left-1.5 max-w-[90%] truncate text-[11px]">
-                      {t.label ?? app.title}
+                      {t(tile.label ?? app.title)}
                     </span>
                   </button>
                 )

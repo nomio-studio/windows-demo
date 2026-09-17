@@ -1,3 +1,4 @@
+import { useT } from '../core/i18n'
 import { getApp } from '../core/registry'
 import { useWindowsStore } from '../core/store/windows'
 import type { AppProps } from '../core/types'
@@ -13,7 +14,8 @@ export default function ModernApp({ windowId, launch }: AppProps) {
   const launchColor = (launch as { color?: string } | undefined)?.color
   const color = launchColor ?? app?.color ?? '#0078D7'
   const Icon = win?.icon ?? app?.icon
-  const name = win?.title ?? app?.title ?? 'App'
+  const t = useT()
+  const name = t(win?.title ?? app?.title ?? 'app.modern')
 
   return (
     <div className="flex h-full flex-col items-center justify-center gap-5 bg-[#fafafa] text-black">
@@ -26,7 +28,7 @@ export default function ModernApp({ windowId, launch }: AppProps) {
       <p className="text-[22px] font-light">{name}</p>
       <div className="h-px w-40" style={{ background: color }} />
       <p className="text-[13px] text-[#888]">
-        This app is a visual placeholder in the demo.
+        {t('modern.placeholder')}
       </p>
     </div>
   )
