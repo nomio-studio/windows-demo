@@ -1,6 +1,6 @@
 import type { PointerEvent as ReactPointerEvent } from 'react'
 import { getApp } from '../core/registry'
-import { useWindowsStore } from '../core/store/windows'
+import { shellSize, useWindowsStore } from '../core/store/windows'
 import type { WindowState } from '../core/types'
 import { CloseIcon, MaximizeIcon, MinimizeIcon, RestoreIcon } from './icons'
 
@@ -54,15 +54,16 @@ export default function WindowFrame({ win }: { win: WindowState }) {
         }))
         return
       }
+      const sh = shellSize()
       const nx = clamp(
         st.rect.x + ev.clientX - st.mx,
         80 - st.rect.width,
-        window.innerWidth - 60,
+        sh.width - 60,
       )
       const ny = clamp(
         st.rect.y + ev.clientY - st.my,
         0,
-        window.innerHeight - 80,
+        sh.height - 80,
       )
       setBounds(win.id, { ...st.rect, x: nx, y: ny })
     }

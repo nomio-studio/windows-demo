@@ -1,8 +1,24 @@
 import { create } from 'zustand'
 import { getApp } from '../registry'
-import type { IconType, Rect, WindowState } from '../types'
+import type { IconType, Rect, Size, WindowState } from '../types'
 
 export const TASKBAR_HEIGHT = 40
+
+/**
+ * Current drawable area of the desktop. Measures the shell element so
+ * safe-area insets are honoured; falls back to the visual viewport
+ * (which, unlike innerWidth/innerHeight, tracks pinch-zoom and
+ * collapsing mobile browser chrome).
+ */
+export function shellSize(): Size {
+  const el = document.getElementById('shell')
+  if (el) return { width: el.clientWidth, height: el.clientHeight }
+  const vv = window.visualViewport
+  return {
+    width: Math.round(vv?.width ?? window.innerWidth),
+    height: Math.round(vv?.height ?? window.innerHeight),
+  }
+}
 
 let counter = 0
 
@@ -33,8 +49,9 @@ interface WindowsStore {
 
 function spawnBounds(appId: string, index: number): Rect {
   const app = getApp(appId)
-  const vw = window.innerWidth
-  const vh = window.innerHeight - TASKBAR_HEIGHT
+  const sh = shellSize()
+  const vw = sh.width
+  const vh = sh.height - TASKBAR_HEIGHT
   const width = Math.min(app.defaultSize.width, vw - 16)
   const height = Math.min(app.defaultSize.height, vh - 16)
   const offset = (index % 6) * 30
@@ -63,7 +80,8 @@ export const useWindowsStore = create<WindowsStore>()((set, get) => ({
     }
     const id = `w${++counter}`
     // Phone-sized screens: apps open maximized like mobile apps.
-    const full = window.innerWidth < 640
+    const sh = shellSize()
+    const full = sh.width < 640
     const win: WindowState = {
       id,
       appId,
@@ -71,12 +89,7 @@ export const useWindowsStore = create<WindowsStore>()((set, get) => ({
       title: opts?.title,
       icon: opts?.icon,
       bounds: full
-        ? {
-            x: 0,
-            y: 0,
-            width: window.innerWidth,
-            height: window.innerHeight - TASKBAR_HEIGHT,
-          }
+        ? { x: 0, y: 0, width: sh.width, height: sh.height - TASKBAR_HEIGHT }
         : spawnBounds(appId, s.windows.length),
       prevBounds: null,
       z: s.topZ + 1,
@@ -142,8 +155,8 @@ export const useWindowsStore = create<WindowsStore>()((set, get) => ({
           bounds: {
             x: 0,
             y: 0,
-            width: window.innerWidth,
-            height: window.innerHeight - TASKBAR_HEIGHT,
+            width: shellSize().width,
+            height: shellSize().height - TASKBAR_HEIGHT,
           },
         }
       }),
@@ -162,8 +175,9 @@ export const useWindowsStore = create<WindowsStore>()((set, get) => ({
 
   reflow: () =>
     set((s) => {
-      const vw = window.innerWidth
-      const vh = window.innerHeight - TASKBAR_HEIGHT
+      const sh = shellSize()
+      const vw = sh.width
+      const vh = sh.height - TASKBAR_HEIGHT
       return {
         windows: s.windows.map((w) => {
           if (w.maximized)

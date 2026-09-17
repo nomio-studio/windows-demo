@@ -56,10 +56,14 @@ export default function DesktopShell() {
     setFlyout(null)
   })
 
-  // Keep windows fitted to the viewport on resize/rotation.
+  // Keep windows fitted to the viewport on resize/rotation/zoom.
   useEffect(() => {
     window.addEventListener('resize', reflow)
-    return () => window.removeEventListener('resize', reflow)
+    window.visualViewport?.addEventListener('resize', reflow)
+    return () => {
+      window.removeEventListener('resize', reflow)
+      window.visualViewport?.removeEventListener('resize', reflow)
+    }
   }, [reflow])
 
   // App shortcut deep links (`?app=<id>` from manifest shortcuts).
@@ -183,7 +187,7 @@ export default function DesktopShell() {
   ]
 
   return (
-    <div className="relative h-full w-full overflow-hidden">
+    <div id="shell" className="relative h-full w-full overflow-hidden">
       <Wallpaper />
       <DesktopIcons
         onMenu={(e, entry) => openMenu(e, entry ? iconMenu(entry) : desktopMenu())}
