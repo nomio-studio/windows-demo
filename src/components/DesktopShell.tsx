@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { MouseEvent as ReactMouseEvent } from 'react'
 import { useEscape } from '../core/hooks'
+import { usePwaStore } from '../core/store/pwa'
 import {
   useSystemStore,
   type ContextMenuItem,
@@ -16,6 +17,7 @@ import SearchFlyout from './SearchFlyout'
 import StartMenu from './StartMenu'
 import Taskbar from './Taskbar'
 import TrayFlyouts from './TrayFlyouts'
+import UpdateToast from './UpdateToast'
 import Wallpaper from './Wallpaper'
 import WindowFrame from './WindowFrame'
 
@@ -39,6 +41,8 @@ export default function DesktopShell() {
   const iconSize = useSystemStore((s) => s.desktopIconSize)
   const setIconSize = useSystemStore((s) => s.setDesktopIconSize)
   const brightness = useSystemStore((s) => s.brightness)
+  const pendingFile = usePwaStore((s) => s.pendingFile)
+  const setPendingFile = usePwaStore((s) => s.setPendingFile)
   const [menu, setMenu] = useState<MenuState | null>(null)
 
   const openMenu = (e: ReactMouseEvent, items: ContextMenuItem[]) => {
@@ -50,6 +54,35 @@ export default function DesktopShell() {
     setMenu(null)
     setFlyout(null)
   })
+
+  // App shortcut deep links (`?app=<id>` from manifest shortcuts).
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const appId = params.get('app')
+    if (appId) {
+      try {
+        openApp(appId)
+      } catch {
+        // Unknown app id — land on a plain desktop.
+      }
+      window.history.replaceState(null, '', window.location.pathname)
+    }
+  }, [openApp])
+
+  // Files delivered by the OS "Open with" handler open in Notepad.
+  useEffect(() => {
+    if (!pendingFile) return
+    setPendingFile(null)
+    pendingFile
+      .read()
+      .then((text) =>
+        openApp('notepad', {
+          launch: { name: pendingFile.name, text },
+          title: `${pendingFile.name} - Notepad`,
+        }),
+      )
+      .catch(() => {})
+  }, [pendingFile, openApp, setPendingFile])
 
   const openSettings = (page: string) =>
     openApp('settings', { launch: { page } })
@@ -159,6 +192,7 @@ export default function DesktopShell() {
       {flyout === 'calendar' && <CalendarFlyout />}
       {flyout === 'actionCenter' && <ActionCenter />}
       <TrayFlyouts />
+      <UpdateToast />
 
       {/* Click-away layer while a flyout is open */}
       {flyout && (

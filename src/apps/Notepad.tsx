@@ -11,9 +11,10 @@ interface MenuItem {
 type Menu = { name: string; items: (MenuItem | 'sep')[] }
 
 /** Notepad: menu bar, editable text, word wrap, Ln/Col status bar. */
-export default function NotepadApp({ windowId }: AppProps) {
+export default function NotepadApp({ windowId, launch }: AppProps) {
   const closeWindow = useWindowsStore((s) => s.closeWindow)
-  const [text, setText] = useState('')
+  const file = launch as { name?: string; text?: string } | undefined
+  const [text, setText] = useState(file?.text ?? '')
   const [wrap, setWrap] = useState(true)
   const [statusBar, setStatusBar] = useState(true)
   const [openMenu, setOpenMenu] = useState<string | null>(null)
