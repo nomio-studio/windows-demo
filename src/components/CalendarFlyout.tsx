@@ -1,0 +1,72 @@
+import { useMemo } from 'react'
+import { formatDateLong, useClock } from '../core/hooks'
+
+const DOW = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']
+
+/** Clock flyout: digital time + mini month calendar. */
+export default function CalendarFlyout() {
+  const now = useClock()
+
+  const { label, weeks, today } = useMemo(() => {
+    const y = now.getFullYear()
+    const m = now.getMonth()
+    const label = now.toLocaleDateString('en-US', {
+      month: 'long',
+      year: 'numeric',
+    })
+    const first = new Date(y, m, 1).getDay()
+    const days = new Date(y, m + 1, 0).getDate()
+    const cells: (number | null)[] = [
+      ...Array(first).fill(null),
+      ...Array.from({ length: days }, (_, i) => i + 1),
+    ]
+    while (cells.length % 7) cells.push(null)
+    const weeks: (number | null)[][] = []
+    for (let i = 0; i < cells.length; i += 7) weeks.push(cells.slice(i, i + 7))
+    return { label, weeks, today: now.getDate() }
+  }, [now])
+
+  return (
+    <div className="anim-flyout-up absolute bottom-10 right-0 z-[55000] w-[340px] border-l border-black/60 bg-[#1f1f1f]/95 p-4 text-white shadow-2xl backdrop-blur-xl">
+      <p className="text-[40px] font-extralight leading-none">
+        {now.toLocaleTimeString('en-US', {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false,
+        })}
+      </p>
+      <p className="mb-3 mt-1 text-[13px] text-white/70">
+        {formatDateLong(now)}
+      </p>
+
+      <div className="border-t border-white/15 pt-3">
+        <p className="mb-2 px-1 text-[13px]">{label}</p>
+        <div className="grid grid-cols-7 text-center">
+          {DOW.map((d) => (
+            <span key={d} className="py-1 text-[11px] text-white/55">
+              {d}
+            </span>
+          ))}
+          {weeks.flat().map((d, i) => (
+            <span
+              key={i}
+              className={`mx-auto flex size-8 items-center justify-center text-[12px] ${
+                d === null
+                  ? ''
+                  : d === today
+                    ? 'rounded-full bg-[#0078d7] font-semibold'
+                    : 'rounded-full hover:bg-white/15'
+              }`}
+            >
+              {d ?? ''}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      <div className="mt-3 border-t border-white/15 pt-2.5 text-[12px] text-white/50">
+        No events today
+      </div>
+    </div>
+  )
+}

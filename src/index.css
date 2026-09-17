@@ -1,0 +1,156 @@
+@import "tailwindcss";
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family:
+    "Segoe UI",
+    "Segoe UI Variable",
+    system-ui,
+    -apple-system,
+    "Helvetica Neue",
+    Arial,
+    sans-serif;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Desktop-style UI: no text selection except in editable fields */
+* {
+  -webkit-user-select: none;
+  user-select: none;
+}
+input,
+textarea,
+[contenteditable] {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+::-webkit-scrollbar {
+  width: 14px;
+  height: 14px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(155, 155, 155, 0.55);
+  border: 4px solid transparent;
+  background-clip: padding-box;
+  border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(155, 155, 155, 0.9);
+  background-clip: padding-box;
+  border: 4px solid transparent;
+  border-radius: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Windows-style sliders */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #0078d7;
+  border: none;
+}
+input[type="range"]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #0078d7;
+  border: none;
+}
+
+@keyframes flyout-up {
+  from {
+    transform: translateY(24px);
+    opacity: 0.4;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+@keyframes flyout-right {
+  from {
+    transform: translateX(48px);
+    opacity: 0.4;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+@keyframes lock-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes lock-up {
+  from {
+    transform: translateY(60px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+@keyframes menu-pop {
+  from {
+    transform: scale(0.97);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+@keyframes dot-orbit {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.anim-flyout-up {
+  animation: flyout-up 0.18s ease-out;
+}
+.anim-flyout-right {
+  animation: flyout-right 0.18s ease-out;
+}
+.anim-fade {
+  animation: lock-fade 0.3s ease-out;
+}
+.anim-lock-up {
+  animation: lock-up 0.35s ease-out;
+}
+.anim-menu {
+  animation: menu-pop 0.1s ease-out;
+}
+.anim-dot-orbit {
+  animation: dot-orbit 1.6s linear infinite;
+}

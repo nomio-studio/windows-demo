@@ -1,0 +1,170 @@
+import type { MouseEvent as ReactMouseEvent } from 'react'
+import { getApp } from '../core/registry'
+import { useSystemStore } from '../core/store/system'
+import { useWindowsStore } from '../core/store/windows'
+import { taskbarPins } from '../config/shell'
+import { formatDate, formatTime, useClock } from '../core/hooks'
+import {
+  ActionCenterIcon,
+  ChevronUp,
+  SearchIcon,
+  TaskViewIcon,
+  VolumeIcon,
+  WifiIcon,
+  WindowsLogo,
+} from './icons'
+
+interface Props {
+  onMenu: (e: ReactMouseEvent, kind: 'taskbar' | 'winx') => void
+}
+
+const hover = 'transition-colors hover:bg-white/10'
+
+/** The taskbar: start, search, task view, app buttons, tray, clock. */
+export default function Taskbar({ onMenu }: Props) {
+  const windows = useWindowsStore((s) => s.windows)
+  const activeId = useWindowsStore((s) => s.activeId)
+  const openApp = useWindowsStore((s) => s.openApp)
+  const toggleTaskbar = useWindowsStore((s) => s.toggleTaskbar)
+  const minimizeAll = useWindowsStore((s) => s.minimizeAll)
+  const flyout = useSystemStore((s) => s.flyout)
+  const toggleFlyout = useSystemStore((s) => s.toggleFlyout)
+  const wifiOn = useSystemStore((s) => s.wifiOn)
+  const now = useClock()
+
+  const runningIds = [...new Set(windows.map((w) => w.appId))]
+  const items = [
+    ...taskbarPins,
+    ...runningIds.filter((id) => !taskbarPins.includes(id)),
+  ]
+
+  return (
+    <div
+      className="absolute inset-x-0 bottom-0 z-[60000] flex h-10 items-stretch bg-[#101010]/95 text-white backdrop-blur-md"
+      onContextMenu={(e) => onMenu(e, 'taskbar')}
+    >
+      {/* Start button */}
+      <button
+        className={`flex w-12 items-center justify-center ${hover} ${
+          flyout === 'start' ? 'bg-white/10' : ''
+        }`}
+        onClick={() => toggleFlyout('start')}
+        onContextMenu={(e) => {
+          e.stopPropagation()
+          onMenu(e, 'winx')
+        }}
+        aria-label="Start"
+      >
+        <WindowsLogo className="size-5 text-white hover:text-[#4da6e8]" />
+      </button>
+
+      {/* Search box */}
+      <button
+        className={`m-1.5 hidden w-80 items-center gap-2 rounded-[2px] bg-[#f2f2f2] px-2.5 text-left text-[13px] text-[#3c3c3c] hover:bg-white sm:flex ${
+          flyout === 'search' ? 'bg-white' : ''
+        }`}
+        onClick={() => toggleFlyout('search')}
+        onContextMenu={(e) => e.stopPropagation()}
+      >
+        <SearchIcon className="size-4 text-[#3c3c3c]" />
+        <span className="truncate">Type here to search</span>
+      </button>
+
+      {/* Task view */}
+      <button
+        className={`hidden w-11 items-center justify-center sm:flex ${hover}`}
+        onClick={() => toggleFlyout('search')}
+        aria-label="Task view"
+      >
+        <TaskViewIcon className="size-5" />
+      </button>
+
+      {/* App buttons */}
+      <div className="flex min-w-0 flex-1 items-stretch">
+        {items.map((appId) => {
+          const app = getApp(appId)
+          const appWins = windows.filter((w) => w.appId === appId)
+          const open = appWins.length > 0
+          const focused =
+            open && appWins.some((w) => w.id === activeId && !w.minimized)
+          const Icon = appWins[0]?.icon ?? app.icon
+          return (
+            <button
+              key={appId}
+              className={`relative flex w-12 shrink-0 items-center justify-center ${hover} ${
+                focused ? 'bg-white/10' : ''
+              }`}
+              onClick={() =>
+                open ? toggleTaskbar(appWins[0].id) : openApp(appId)
+              }
+              title={app.title}
+            >
+              <Icon className="size-6" />
+              <span
+                className={`absolute inset-x-1.5 bottom-0 h-[2px] ${
+                  focused ? 'bg-[#76b9ed]' : open ? 'bg-white/40' : ''
+                }`}
+              />
+            </button>
+          )
+        })}
+      </div>
+
+      {/* System tray */}
+      <div className="flex items-stretch">
+        <button
+          className={`flex w-6 items-center justify-center ${hover} ${
+            flyout === 'trayOverflow' ? 'bg-white/10' : ''
+          }`}
+          onClick={() => toggleFlyout('trayOverflow')}
+          aria-label="Show hidden icons"
+        >
+          <ChevronUp className="size-3.5" />
+        </button>
+        <button
+          className={`flex w-7 items-center justify-center ${hover} ${
+            wifiOn ? '' : 'opacity-40'
+          } ${flyout === 'network' ? 'bg-white/10' : ''}`}
+          onClick={() => toggleFlyout('network')}
+          aria-label="Network"
+        >
+          <WifiIcon className="size-4" />
+        </button>
+        <button
+          className={`flex w-7 items-center justify-center ${hover} ${
+            flyout === 'volume' ? 'bg-white/10' : ''
+          }`}
+          onClick={() => toggleFlyout('volume')}
+          aria-label="Volume"
+        >
+          <VolumeIcon className="size-4" />
+        </button>
+        <button
+          className={`flex w-[76px] flex-col items-center justify-center text-[11.5px] leading-[1.2] ${hover} ${
+            flyout === 'calendar' ? 'bg-white/10' : ''
+          }`}
+          onClick={() => toggleFlyout('calendar')}
+        >
+          <span>{formatTime(now)}</span>
+          <span>{formatDate(now)}</span>
+        </button>
+        <button
+          className={`flex w-9 items-center justify-center border-r border-white/25 ${hover} ${
+            flyout === 'actionCenter' ? 'bg-white/10' : ''
+          }`}
+          onClick={() => toggleFlyout('actionCenter')}
+          aria-label="Action center"
+        >
+          <ActionCenterIcon className="size-[18px]" />
+        </button>
+        {/* Show desktop sliver */}
+        <button
+          className="w-[6px] hover:bg-white/20"
+          onClick={minimizeAll}
+          aria-label="Show desktop"
+          title="Show desktop"
+        />
+      </div>
+    </div>
+  )
+}
