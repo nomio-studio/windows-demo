@@ -115,7 +115,7 @@ export default function ActionCenter() {
         {tiles.map((t) => (
           <button
             key={t.id}
-            className={`flex h-[74px] flex-col items-center justify-center gap-1.5 px-1 ${
+            className={`flex h-[74px] flex-col items-center justify-center gap-1.5 px-1 transition-all duration-150 active:scale-95 ${
               t.on ? 'bg-[#0078d7] hover:bg-[#1a86e0]' : 'bg-[#2e2e2e] hover:bg-[#3d3d3d]'
             }`}
             onClick={t.toggle}

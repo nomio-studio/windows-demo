@@ -96,8 +96,8 @@ input[type="range"]::-moz-range-thumb {
 
 @keyframes flyout-up {
   from {
-    transform: translateY(24px);
-    opacity: 0.4;
+    transform: translateY(44px);
+    opacity: 0;
   }
   to {
     transform: translateY(0);
@@ -106,8 +106,8 @@ input[type="range"]::-moz-range-thumb {
 }
 @keyframes flyout-right {
   from {
-    transform: translateX(48px);
-    opacity: 0.4;
+    transform: translateX(64px);
+    opacity: 0;
   }
   to {
     transform: translateX(0);
@@ -134,12 +134,50 @@ input[type="range"]::-moz-range-thumb {
 }
 @keyframes menu-pop {
   from {
-    transform: scale(0.97);
+    transform: scale(0.96) translateY(-4px);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+@keyframes win-open {
+  from {
+    transform: scale(0.92) translateY(8px);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+@keyframes tile-in {
+  from {
+    transform: scale(0.82);
     opacity: 0;
   }
   to {
     transform: scale(1);
     opacity: 1;
+  }
+}
+@keyframes icon-in {
+  from {
+    transform: translateY(6px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+@keyframes boot-glow {
+  from {
+    filter: drop-shadow(0 0 18px rgba(140, 200, 255, 0.35));
+  }
+  to {
+    filter: drop-shadow(0 0 34px rgba(140, 200, 255, 0.7));
   }
 }
 @keyframes dot-orbit {
@@ -162,10 +200,10 @@ input[type="range"]::-moz-range-thumb {
 }
 
 .anim-flyout-up {
-  animation: flyout-up 0.18s ease-out;
+  animation: flyout-up 0.24s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .anim-flyout-right {
-  animation: flyout-right 0.18s ease-out;
+  animation: flyout-right 0.24s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .anim-fade {
   animation: lock-fade 0.3s ease-out;
@@ -174,10 +212,23 @@ input[type="range"]::-moz-range-thumb {
   animation: lock-up 0.35s ease-out;
 }
 .anim-menu {
-  animation: menu-pop 0.1s ease-out;
+  animation: menu-pop 0.12s ease-out;
+  transform-origin: top left;
 }
 .anim-dot-orbit {
   animation: dot-orbit 1.6s linear infinite;
+}
+.anim-win-open {
+  animation: win-open 0.18s cubic-bezier(0.2, 0, 0, 1);
+}
+.anim-tile-in {
+  animation: tile-in 0.28s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+.anim-icon-in {
+  animation: icon-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+.anim-boot-glow {
+  animation: boot-glow 1.8s ease-in-out infinite alternate;
 }
 .anim-toast-in {
   animation: toast-in 0.25s cubic-bezier(0.1, 0.9, 0.2, 1);

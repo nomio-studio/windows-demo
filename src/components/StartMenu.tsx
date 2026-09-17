@@ -140,7 +140,7 @@ export default function StartMenu() {
       </div>
 
       {/* App list */}
-      <div className="w-[190px] shrink-0 overflow-y-auto py-1 sm:w-[236px]">
+      <div className="anim-fade w-[190px] shrink-0 overflow-y-auto py-1 sm:w-[236px]">
         {groups.map(([letter, entries]) => (
           <div key={letter}>
             <div className="px-4 pb-0.5 pt-2.5 text-[12px] font-semibold text-white/80">
@@ -183,8 +183,11 @@ export default function StartMenu() {
                 return (
                   <button
                     key={`${t.appId}-${i}`}
-                    className={`group relative flex items-center justify-center ${TILE_SPAN[t.size]} outline outline-1 outline-transparent hover:outline-white/50`}
-                    style={{ background: t.color ?? app.color ?? '#0078D7' }}
+                    className={`anim-tile-in group relative flex items-center justify-center ${TILE_SPAN[t.size]} outline outline-1 outline-transparent transition-transform hover:outline-white/50 active:scale-95`}
+                    style={{
+                      background: t.color ?? app.color ?? '#0078D7',
+                      animationDelay: `${i * 30}ms`,
+                    }}
                     onClick={() => {
                       openApp(t.appId)
                       setFlyout(null)

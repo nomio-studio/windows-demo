@@ -154,7 +154,7 @@ export default function ExplorerApp({ launch }: AppProps) {
         </div>
 
         {/* Listing */}
-        <div className="min-w-0 flex-1 overflow-y-auto">
+        <div key={path.join('/')} className="anim-fade min-w-0 flex-1 overflow-y-auto">
           {items.length === 0 ? (
             <div className="flex h-full flex-col items-center justify-center gap-3 text-[#888]">
               {path[0] === 'Recycle Bin' ? (

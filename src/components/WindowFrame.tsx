@@ -1,3 +1,4 @@
+import { useLayoutEffect, useRef, useState } from 'react'
 import type { PointerEvent as ReactPointerEvent } from 'react'
 import { getApp } from '../core/registry'
 import { shellSize, useWindowsStore } from '../core/store/windows'
@@ -19,10 +20,79 @@ export default function WindowFrame({ win }: { win: WindowState }) {
   const toggleMaximize = useWindowsStore((s) => s.toggleMaximize)
   const setBounds = useWindowsStore((s) => s.setBounds)
   const min = app.minSize ?? { width: 320, height: 200 }
+  const rootRef = useRef<HTMLDivElement>(null)
+  // Stays visible until the minimize-outro finishes, then display:none.
+  const [hidden, setHidden] = useState(win.minimized)
+  const [closing, setClosing] = useState(false)
+  const wasMin = useRef(win.minimized)
+  const prevMax = useRef(win.maximized)
+  const prevBounds = useRef(win.bounds)
 
   const Icon = win.icon ?? app.icon
   const title = win.title ?? app.title
   const AppComponent = app.component
+
+  // Maximize/restore: FLIP — scale from the previous frame to the new
+  // one, like Windows' snap animation.
+  useLayoutEffect(() => {
+    const el = rootRef.current
+    if (el && prevMax.current !== win.maximized && !win.minimized) {
+      const f = prevBounds.current
+      const t = win.bounds
+      el.animate(
+        [
+          {
+            transform: `translate(${f.x - t.x}px, ${f.y - t.y}px) scale(${f.width / t.width}, ${f.height / t.height})`,
+            transformOrigin: 'top left',
+          },
+          { transform: 'none', transformOrigin: 'top left' },
+        ],
+        { duration: 180, easing: 'cubic-bezier(0.2, 0, 0, 1)' },
+      )
+    }
+    prevMax.current = win.maximized
+    prevBounds.current = win.bounds
+  }, [win.maximized, win.bounds, win.minimized])
+
+  // Minimize swoops down toward the taskbar; restore rises back up.
+  useLayoutEffect(() => {
+    const el = rootRef.current
+    if (!el || wasMin.current === win.minimized) return
+    wasMin.current = win.minimized
+    if (win.minimized) {
+      el.animate(
+        [
+          { transform: 'none', opacity: 1 },
+          { transform: 'translateY(70px) scale(0.72)', opacity: 0 },
+        ],
+        { duration: 150, easing: 'ease-in', fill: 'forwards' },
+      ).finished.finally(() => setHidden(true))
+    } else {
+      setHidden(false)
+      el.animate(
+        [
+          { transform: 'translateY(70px) scale(0.72)', opacity: 0 },
+          { transform: 'none', opacity: 1 },
+        ],
+        { duration: 180, easing: 'cubic-bezier(0.2, 0, 0, 1)' },
+      )
+    }
+  }, [win.minimized])
+
+  // Windows closes with a quick shrink-fade before unmounting.
+  const handleClose = () => {
+    if (closing) return
+    setClosing(true)
+    const el = rootRef.current
+    if (!el) return closeWindow(win.id)
+    el.animate(
+      [
+        { transform: 'none', opacity: 1 },
+        { transform: 'scale(0.94)', opacity: 0 },
+      ],
+      { duration: 110, easing: 'ease-in', fill: 'forwards' },
+    ).finished.finally(() => closeWindow(win.id))
+  }
 
   const onTitlePointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
     if (e.button !== 0) return
@@ -117,7 +187,8 @@ export default function WindowFrame({ win }: { win: WindowState }) {
 
   return (
     <div
-      className={`absolute flex flex-col bg-white ${
+      ref={rootRef}
+      className={`anim-win-open absolute flex flex-col bg-white ${
         win.maximized ? '' : 'border border-black/30'
       } ${
         active
@@ -130,7 +201,7 @@ export default function WindowFrame({ win }: { win: WindowState }) {
         width: win.bounds.width,
         height: win.bounds.height,
         zIndex: win.z,
-        display: win.minimized ? 'none' : undefined,
+        display: hidden ? 'none' : undefined,
       }}
       onPointerDown={() => focusWindow(win.id)}
     >
@@ -176,7 +247,7 @@ export default function WindowFrame({ win }: { win: WindowState }) {
           </button>
           <button
             className={`${btn} hover:bg-[#e81123] hover:text-white`}
-            onClick={() => closeWindow(win.id)}
+            onClick={handleClose}
             aria-label="Close"
             tabIndex={-1}
           >

@@ -104,7 +104,7 @@ export default function NotepadApp({ windowId, launch }: AppProps) {
               {m.name}
             </button>
             {openMenu === m.name && (
-              <div className="absolute left-0 top-full z-20 w-44 border border-[#a0a0a0] bg-[#f2f2f2] py-[3px] shadow-[0_4px_12px_rgba(0,0,0,0.3)]">
+              <div className="anim-menu absolute left-0 top-full z-20 w-44 border border-[#a0a0a0] bg-[#f2f2f2] py-[3px] shadow-[0_4px_12px_rgba(0,0,0,0.3)]">
                 {m.items.map((it, i) =>
                   it === 'sep' ? (
                     <div key={i} className="mx-2 my-[3px] h-px bg-black/15" />

@@ -29,7 +29,7 @@ export function BootScreen() {
   }, [setPhase])
   return (
     <div className="flex h-full flex-col items-center justify-center bg-black">
-      <WindowsLogo className="mb-20 w-[130px] text-white" />
+      <WindowsLogo className="anim-boot-glow mb-20 w-[130px] text-white" />
       <DotsSpinner />
     </div>
   )

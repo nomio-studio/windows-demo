@@ -116,7 +116,7 @@ export default function SettingsApp({ launch }: AppProps) {
           </div>
 
           {/* Page content */}
-          <div className="min-w-0 flex-1 overflow-y-auto p-6">
+          <div key={page} className="anim-fade min-w-0 flex-1 overflow-y-auto p-6">
             {page === 'system' && (
               <div className="max-w-[520px]">
                 <h2 className="mb-1 text-[20px] font-light">Display</h2>

@@ -10,7 +10,7 @@ export default function Wallpaper() {
   const index = useSystemStore((s) => s.wallpaper)
   const wp = wallpapers[index] ?? wallpapers[0]
   return (
-    <div className="absolute inset-0" style={wp.style}>
+    <div key={index} className="anim-fade absolute inset-0" style={wp.style}>
       {index === 0 && (
         <div
           className="absolute left-1/2 top-[34%] -translate-x-1/2 -translate-y-1/2"

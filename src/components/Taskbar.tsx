@@ -98,7 +98,7 @@ export default function Taskbar({ onMenu }: Props) {
           return (
             <button
               key={appId}
-              className={`relative flex w-12 shrink-0 items-center justify-center ${hover} ${
+              className={`relative flex w-12 shrink-0 items-center justify-center transition-transform active:scale-90 ${hover} ${
                 focused ? 'bg-white/10' : ''
               }`}
               onClick={() =>
@@ -108,7 +108,7 @@ export default function Taskbar({ onMenu }: Props) {
             >
               <Icon className="size-6" />
               <span
-                className={`absolute inset-x-1.5 bottom-0 h-[2px] ${
+                className={`absolute inset-x-1.5 bottom-0 h-[2px] transition-colors duration-150 ${
                   focused ? 'bg-[#76b9ed]' : open ? 'bg-white/40' : ''
                 }`}
               />

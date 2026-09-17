@@ -187,7 +187,7 @@ export default function DesktopShell() {
   ]
 
   return (
-    <div id="shell" className="relative h-full w-full overflow-hidden">
+    <div id="shell" className="anim-fade relative h-full w-full overflow-hidden">
       <Wallpaper />
       <DesktopIcons
         onMenu={(e, entry) => openMenu(e, entry ? iconMenu(entry) : desktopMenu())}
@@ -226,12 +226,10 @@ export default function DesktopShell() {
       )}
 
       {/* Brightness veil */}
-      {brightness < 100 && (
-        <div
-          className="pointer-events-none fixed inset-0 z-[80000] bg-black"
-          style={{ opacity: ((100 - brightness) / 100) * 0.55 }}
-        />
-      )}
+      <div
+        className="pointer-events-none fixed inset-0 z-[80000] bg-black transition-opacity duration-200"
+        style={{ opacity: ((100 - brightness) / 100) * 0.55 }}
+      />
     </div>
   )
 }

@@ -27,14 +27,15 @@ export default function DesktopIcons({ onMenu }: Props) {
       onPointerDown={() => setSelected(null)}
       onContextMenu={(e) => onMenu(e, null)}
     >
-      {desktopIcons.map((d) => (
+      {desktopIcons.map((d, i) => (
         <button
           key={d.id}
-          className={`flex ${sz.box} shrink-0 flex-col items-center gap-1 rounded-[2px] border ${
+          className={`anim-icon-in flex ${sz.box} shrink-0 flex-col items-center gap-1 rounded-[2px] border transition-transform active:scale-95 ${
             selected === d.id
               ? 'border-[#7ab8ec]/70 bg-[#0078d7]/30'
               : 'border-transparent hover:border-white/25 hover:bg-white/10'
           }`}
+          style={{ animationDelay: `${i * 45}ms` }}
           onPointerDown={(e) => {
             e.stopPropagation()
             setSelected(d.id)
