@@ -114,9 +114,8 @@ const render = (size, logoFraction, fg, bg) => {
 }
 
 // ------------------------------------------------------------------ outputs
-// Windows palette: blue logo on white for favicons; white logo on the
-// Windows-blue tile for app icons (like a real Win10 start tile).
-const BLUE = [0, 120, 215] // #0078D7
+// Unified convention: black logo on a white background for every icon.
+const INK = [0, 0, 0]
 const PAPER = [255, 255, 255]
 
 const write = (rel, buf) => {
@@ -127,25 +126,25 @@ const write = (rel, buf) => {
 }
 
 // Vector source of truth (SVG manifest icon + browser favicon):
-// blue logo centred on a white square with generous padding.
+// black logo centred on a white square with generous padding.
 write(
   'icon.svg',
   Buffer.from(
-    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" fill="#fff"/><path fill="#0078D7" transform="translate(76.8 51.2) scale(0.8)" d="M0 93.7l183.6-25.3v177.4H0V93.7zm0 324.6l183.6 25.3V268.4H0v149.9zm203.8 28L448 480V268.4H203.8v177.9zm0-380.6v180.1H448V32L203.8 65.7z"/></svg>`,
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" fill="#fff"/><path fill="#000" transform="translate(76.8 51.2) scale(0.8)" d="M0 93.7l183.6-25.3v177.4H0V93.7zm0 324.6l183.6 25.3V268.4H0v149.9zm203.8 28L448 480V268.4H203.8v177.9zm0-380.6v180.1H448V32L203.8 65.7z"/></svg>`,
   ),
 )
 
 const jobs = [
-  // Any-purpose: install icon, taskbar, app switcher — tile style.
-  ['icons/icon-192.png', 192, 0.6, PAPER, BLUE],
-  ['icons/icon-512.png', 512, 0.6, PAPER, BLUE],
-  // Maskable: full-bleed blue, logo inside the 80% safe zone.
-  ['icons/maskable-192.png', 192, 0.44, PAPER, BLUE],
-  ['icons/maskable-512.png', 512, 0.44, PAPER, BLUE],
+  // Any-purpose: install icon, taskbar, app switcher.
+  ['icons/icon-192.png', 192, 0.6, INK, PAPER],
+  ['icons/icon-512.png', 512, 0.6, INK, PAPER],
+  // Maskable: logo inside the 80% safe zone.
+  ['icons/maskable-192.png', 192, 0.44, INK, PAPER],
+  ['icons/maskable-512.png', 512, 0.44, INK, PAPER],
   // iOS requires an opaque touch icon.
-  ['apple-touch-icon.png', 180, 0.56, PAPER, BLUE],
+  ['apple-touch-icon.png', 180, 0.56, INK, PAPER],
   // PNG favicon fallback for older browsers.
-  ['favicon-32x32.png', 32, 0.78, BLUE, PAPER],
+  ['favicon-32x32.png', 32, 0.78, INK, PAPER],
 ]
 
 for (const [rel, size, frac, fg, bg] of jobs) {
