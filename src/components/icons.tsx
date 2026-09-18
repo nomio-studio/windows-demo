@@ -1,4 +1,4 @@
-import { useId, type ComponentType, type ReactNode } from 'react'
+import { useId, type ComponentType } from 'react'
 import {
   Accessibility24Regular,
   Airplane24Regular,
@@ -29,12 +29,15 @@ import {
   Delete16Regular,
   Desktop24Regular,
   Dismiss16Regular,
+  Document24Color,
   DocumentAdd16Regular,
+  DocumentText24Color,
   FolderAdd16Regular,
   Games24Regular,
   Globe24Regular,
   Grid16Regular,
   Home16Regular,
+  Image24Color,
   Image24Filled,
   Info16Regular,
   LineHorizontal116Regular,
@@ -209,81 +212,83 @@ export const PaintIcon: IconType = PaintBrush24Color
 export const CalculatorIcon: IconType = F(Calculator24Filled, '#3F3F3F')
 export const StickyNoteIcon: IconType = F(Sticker24Filled, '#FFD54F')
 
-/* ---- Windows resource icons (hand-drawn, glossy Win10 style) ----
- * Desktop/file-system icons get gradients, edge highlights and light
- * perspective — real Win10 icons aren't flat silhouettes. Gradient ids
- * are per-instance via useId so repeated mounts can't collide. */
+/* ---- Windows resource icons — flat Fluent-color style ----
+ * Fluent's colour iconography is flat geometry with soft two-tone
+ * gradients — no skeuomorphic detail (mesh, LEDs, sheen). Where Fluent
+ * ships an authentic *Color glyph we use it; the rest are drawn here
+ * on the same 20x20 grid with Fluent's own palettes. Gradient ids are
+ * per-instance via useId so repeated mounts can't collide. */
 
 const useUid = () => useId().replace(/[^a-zA-Z0-9]/g, '')
 
-/** Yellow folder: tabbed back, dark opening, soft-lit front flap. */
+/** Yellow folder: Fluent flap silhouette + Microsoft's folder ramp. */
 export const FolderIcon: IconType = ({ className }) => {
   const id = useUid()
   return (
-    <svg viewBox="0 0 48 48" className={className}>
+    <svg viewBox="0 0 20 20" className={className}>
       <defs>
-        <linearGradient id={`${id}b`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#E8A824" />
-          <stop offset="1" stopColor="#C07F0A" />
+        <linearGradient
+          id={`${id}b`}
+          x1="10"
+          x2="10"
+          y1="3"
+          y2="15"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop offset="0" stopColor="#F9C23E" />
+          <stop offset="1" stopColor="#E09500" />
         </linearGradient>
-        <linearGradient id={`${id}f`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#FFD65C" />
-          <stop offset="1" stopColor="#EF9F1B" />
+        <linearGradient
+          id={`${id}f`}
+          x1="6"
+          x2="6"
+          y1="7"
+          y2="22"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop offset=".24" stopColor="#FFD638" />
+          <stop offset=".64" stopColor="#FAB500" />
+          <stop offset=".99" stopColor="#CA6407" />
         </linearGradient>
-        <linearGradient id={`${id}sh`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#8A5A00" stopOpacity=".3" />
-          <stop offset="1" stopColor="#8A5A00" stopOpacity="0" />
-        </linearGradient>
-        <radialGradient id={`${id}hl`} cx=".3" cy=".2" r=".9">
-          <stop offset="0" stopColor="#FFF" stopOpacity=".22" />
-          <stop offset=".6" stopColor="#FFF" stopOpacity="0" />
-        </radialGradient>
       </defs>
       <path
-        d="M9 14.5a2 2 0 0 1 2-2h6.5l3 3H39a2 2 0 0 1 2 2v4.5H9z"
+        d="M3 5a2 2 0 0 1 2-2h3.1l1.7 1.6H15a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"
         fill={`url(#${id}b)`}
       />
-      <path d="M11 18.2h26v2.6h-26z" fill="#2E2208" opacity=".55" />
       <path
-        d="M6.5 20.5h35l1.7 16.5a2 2 0 0 1-1.9 2H6.7a2 2 0 0 1-1.9-2z"
+        d="M5 7a2 2 0 0 0-2 2v6.5A2.5 2.5 0 0 0 5.5 18h9a2.5 2.5 0 0 0 2.5-2.5V14a2 2 0 0 0-2-2h-1.88a1 1 0 0 1-.7-.3L8.28 7.6A2 2 0 0 0 6.88 7z"
         fill={`url(#${id}f)`}
       />
-      <path
-        d="M6.5 20.5h35l1.7 16.5a2 2 0 0 1-1.9 2H6.7a2 2 0 0 1-1.9-2z"
-        fill={`url(#${id}hl)`}
-      />
-      <path d="M6.5 20.5h35l.4 3.4H6.9z" fill={`url(#${id}sh)`} />
-      <path d="M6.5 20.5h35" stroke="#FBD25C" strokeWidth=".9" fill="none" />
     </svg>
   )
 }
 
-/** This PC: dark-bezel monitor, glossy blue screen, neck and base. */
+/** This PC: flat blue screen on a simple stand. */
 export const ThisPCIcon: IconType = ({ className }) => {
   const id = useUid()
   return (
-    <svg viewBox="0 0 48 48" className={className}>
+    <svg viewBox="0 0 20 20" className={className}>
       <defs>
-        <linearGradient id={`${id}s`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#8FCCF4" />
-          <stop offset="1" stopColor="#1E6DBD" />
-        </linearGradient>
-        <linearGradient id={`${id}m`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#3D454F" />
-          <stop offset="1" stopColor="#20262D" />
+        <linearGradient
+          id={`${id}s`}
+          x1="10"
+          x2="10"
+          y1="3"
+          y2="14"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop offset="0" stopColor="#6CE0FF" />
+          <stop offset="1" stopColor="#2764E7" />
         </linearGradient>
       </defs>
-      <path d="M20.5 34h7l1.3 6H19.2z" fill="#4E5763" />
-      <rect x="14.5" y="40" width="19" height="2.6" rx="1.3" fill="#3A434D" />
-      <rect x="5.5" y="7.5" width="37" height="27" rx="2.5" fill={`url(#${id}m)`} />
-      <rect x="8" y="10" width="32" height="22" rx=".8" fill={`url(#${id}s)`} />
-      <path d="M8 10h15L10 32H8z" fill="#FFF" opacity=".18" />
-      <circle cx="24" cy="33.2" r=".9" fill="#8A939E" />
+      <rect x="2.5" y="3" width="15" height="10.5" rx="1.6" fill={`url(#${id}s)`} />
+      <path d="M8.6 15.8h2.8l.7 1.7H7.9z" fill="#9FB0C4" />
+      <rect x="6.2" y="17.2" width="7.6" height="1" rx=".5" fill="#9FB0C4" />
     </svg>
   )
 }
 
-/** Recycle bin: tapered silver mesh basket; full adds crumpled paper. */
+/** Recycle bin: flat tapered cup + lid; full adds a paper scrap. */
 const BinSvg = ({
   className,
   full,
@@ -293,171 +298,88 @@ const BinSvg = ({
 }) => {
   const id = useUid()
   return (
-    <svg viewBox="0 0 48 48" className={className}>
+    <svg viewBox="0 0 20 20" className={className}>
       <defs>
-        <linearGradient id={`${id}b`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#D9E1EA" />
-          <stop offset="1" stopColor="#93A1B4" />
+        <linearGradient
+          id={`${id}b`}
+          x1="10"
+          x2="10"
+          y1="6"
+          y2="18"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop offset="0" stopColor="#E2E9F1" />
+          <stop offset="1" stopColor="#A9B8C9" />
         </linearGradient>
       </defs>
       {full && (
         <>
-          <path
-            d="M14 9.5l6-3.8 8 2.8 7-2.8 4.8 4.8-4 3.2-9-2-7.8 3z"
-            fill="#F2F6FA"
-            stroke="#C2CDD9"
-            strokeWidth=".7"
+          <rect
+            x="5.4"
+            y="0.6"
+            width="4.6"
+            height="3.8"
+            rx=".6"
+            transform="rotate(-14 7.7 2.5)"
+            fill="#EDF2F8"
+            stroke="#B9C5D3"
+            strokeWidth=".35"
           />
-          <path
-            d="M20 8.8q2-3 5-2t4 3-1 5-5 2-4-3z"
+          <circle
+            cx="12.9"
+            cy="2.7"
+            r="1.35"
             fill="#E4EBF3"
             stroke="#B4C0CE"
-            strokeWidth=".7"
+            strokeWidth=".35"
           />
         </>
       )}
       <path
-        d="M10 13l3.4 28a3 3 0 0 0 3 2.2h15.2a3 3 0 0 0 3-2.2l3.4-28z"
+        d="M5.6 5.4h8.8l-.9 10.4a2 2 0 0 1-2 1.7H8.5a2 2 0 0 1-2-1.7z"
         fill={`url(#${id}b)`}
       />
-      <g stroke="#EDF2F8" strokeWidth=".8" opacity=".55" fill="none">
-        <path d="M15 13.5l1.6 27M21 13.8l.8 27.5M27 13.8l-.8 27.5M33 13.5l-1.6 27" />
-        <path d="M12 21q12 3.5 24 0M12.8 28q11.2 3.2 22.4 0M13.6 35q10.4 2.8 20.8 0" />
+      <g stroke="#F4F7FB" strokeWidth=".5" opacity=".7" fill="none">
+        <path d="M8 6.4l.5 9.6M10 6.4v9.8M12 6.4l-.5 9.6" />
       </g>
-      <ellipse cx="24" cy="13" rx="14" ry="4.3" fill="#7E8D9D" />
-      <ellipse cx="24" cy="13" rx="11.6" ry="3" fill="#5D6B7B" />
-      <path
-        d="M10 13a14 4.3 0 0 0 28 0"
-        fill="none"
-        stroke="#AEBCCA"
-        strokeWidth=".8"
-      />
+      <rect x="4.4" y="3.6" width="11.2" height="1.9" rx=".95" fill="#8DA0B4" />
+      <rect x="8.6" y="2.2" width="2.8" height="1.4" rx=".7" fill="#8DA0B4" />
     </svg>
   )
 }
 export const RecycleBinIcon: IconType = (p) => <BinSvg {...p} />
 export const RecycleBinFullIcon: IconType = (p) => <BinSvg {...p} full />
 
-/** Drive: metal enclosure, light top face, slot + blue bar, LED. */
+/** Drive: flat metal slab, darker base band, blue accent slot. */
 export const DriveIcon: IconType = ({ className }) => {
   const id = useUid()
   return (
-    <svg viewBox="0 0 48 48" className={className}>
+    <svg viewBox="0 0 20 20" className={className}>
       <defs>
-        <linearGradient id={`${id}t`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#EDF1F6" />
-          <stop offset="1" stopColor="#C6CFDB" />
-        </linearGradient>
-        <linearGradient id={`${id}c`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#D0D8E2" />
-          <stop offset="1" stopColor="#8996A7" />
-        </linearGradient>
-        <linearGradient id={`${id}s`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#8B98A9" />
-          <stop offset="1" stopColor="#6E7B8C" />
+        <linearGradient
+          id={`${id}d`}
+          x1="10"
+          x2="10"
+          y1="5"
+          y2="15"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop offset="0" stopColor="#EDF2F8" />
+          <stop offset="1" stopColor="#B4C1D1" />
         </linearGradient>
       </defs>
-      <path
-        d="M9 14.5a3 3 0 0 1 3-3h24a3 3 0 0 1 3 3v3H9z"
-        fill={`url(#${id}t)`}
-      />
-      <path
-        d="M9 14.5a3 3 0 0 1 3-3h24a3 3 0 0 1 3 3"
-        fill="none"
-        stroke="#F7FAFD"
-        strokeWidth=".8"
-        opacity=".7"
-      />
-      <rect x="9" y="17.5" width="30" height="16.5" rx="1.5" fill={`url(#${id}c)`} />
-      <rect
-        x="9"
-        y="17.5"
-        width="30"
-        height="16.5"
-        rx="1.5"
-        fill="none"
-        stroke="#7A8697"
-        strokeWidth=".6"
-        opacity=".5"
-      />
-      <rect x="11" y="27.8" width="19" height="3" rx="1" fill={`url(#${id}s)`} />
-      <rect x="11.8" y="28.6" width="17.4" height="1.4" rx=".7" fill="#3FA0E8" />
-      <circle cx="34.5" cy="29.3" r="1.6" fill="#4E5B6B" />
-      <circle cx="34.5" cy="29.3" r="1" fill="#63D374" />
-      <path
-        d="M9 32.5a1.5 1.5 0 0 0 1.5 1.5h27a1.5 1.5 0 0 0 1.5-1.5z"
-        fill="#5D6A7A"
-        opacity=".6"
-      />
+      <rect x="2.6" y="5" width="14.8" height="10" rx="1.8" fill={`url(#${id}d)`} />
+      <rect x="2.6" y="12.4" width="14.8" height="1.7" fill="#8FA1B6" opacity=".55" />
+      <rect x="4.6" y="8.4" width="7.4" height="1.5" rx=".75" fill="#5CD1FF" />
+      <rect x="13.4" y="8.4" width="1.9" height="1.5" rx=".6" fill="#8FA1B6" />
     </svg>
   )
 }
 
-/** Page icon: white sheet + folded corner; children add content. */
-const PageSvg = ({
-  className,
-  children,
-}: {
-  className?: string
-  children?: ReactNode
-}) => {
-  const id = useUid()
-  return (
-    <svg viewBox="0 0 48 48" className={className}>
-      <defs>
-        <linearGradient id={`${id}p`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#FFFFFF" />
-          <stop offset="1" stopColor="#E7EDF5" />
-        </linearGradient>
-      </defs>
-      <path
-        d="M13 5.5h15L36 13v28a2 2 0 0 1-2 2H13a2 2 0 0 1-2-2V7.5a2 2 0 0 1 2-2z"
-        fill={`url(#${id}p)`}
-        stroke="#AFBAC8"
-        strokeWidth=".8"
-      />
-      <path
-        d="M28 5.5V12a1 1 0 0 0 1 1h7z"
-        fill="#D6DEE9"
-        stroke="#AFBAC8"
-        strokeWidth=".8"
-      />
-      {children}
-    </svg>
-  )
-}
-export const FileIcon: IconType = (p) => (
-  <PageSvg {...p}>
-    <rect x="16" y="20" width="16" height="1.6" rx=".8" fill="#B9C6D6" />
-    <rect x="16" y="24" width="16" height="1.6" rx=".8" fill="#B9C6D6" />
-    <rect x="16" y="28" width="11" height="1.6" rx=".8" fill="#B9C6D6" />
-  </PageSvg>
-)
-export const DocFileIcon: IconType = (p) => (
-  <PageSvg {...p}>
-    <rect x="16" y="17.5" width="16" height="1.8" rx=".9" fill="#6FA8DC" />
-    <rect x="16" y="22" width="16" height="1.8" rx=".9" fill="#8FBCE8" />
-    <rect x="16" y="26.5" width="16" height="1.8" rx=".9" fill="#8FBCE8" />
-    <rect x="16" y="31" width="10" height="1.8" rx=".9" fill="#8FBCE8" />
-  </PageSvg>
-)
-export const ImageFileIcon: IconType = (p) => (
-  <PageSvg {...p}>
-    <rect x="15" y="18.5" width="18" height="13" rx="1" fill="#A9D9F2" />
-    <circle cx="19.5" cy="22.5" r="1.8" fill="#FFD76B" />
-    <path d="M15 31.5l6-7 4 4.5 4-5.5 4 8z" fill="#5C9E62" />
-    <rect
-      x="15"
-      y="18.5"
-      width="18"
-      height="13"
-      rx="1"
-      fill="none"
-      stroke="#8FB4CC"
-      strokeWidth=".6"
-    />
-  </PageSvg>
-)
+/* File-type icons: Fluent's authentic colour glyphs. */
+export const FileIcon: IconType = Document24Color
+export const DocFileIcon: IconType = DocumentText24Color
+export const ImageFileIcon: IconType = Image24Color
 
 /* ---- Modern-app glyphs (white on the app's accent tile) ---- */
 
