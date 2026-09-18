@@ -2,11 +2,11 @@ import { registerApp } from '../core/registry'
 import type { AppDefinition } from '../core/types'
 import CalculatorApp from './Calculator'
 import EdgeApp from './Edge'
-import ExplorerApp from './Explorer'
+import ExplorerApp from './explorer'
 import ModernApp from './ModernApp'
-import NotepadApp from './Notepad'
-import SettingsApp from './Settings'
-import TaskManagerApp from './TaskManager'
+import NotepadApp from './notepad'
+import SettingsApp from './settings'
+import TaskManagerApp from './taskmgr'
 import {
   AppsIcon,
   CalculatorIcon,

@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useT } from '../../core/i18n'
 import type { MessageKey } from '../../core/i18n/en'
 import { useSystemStore } from '../../core/store/system'
-import { wifiNetworks } from '../../config/shell'
+import { wifiNetworks } from '../../config/network'
 import { CheckIcon, LockIcon, WifiIcon } from '../../components/icons'
 import { PageHead, Row, SubNav, ToggleRow } from './shared'
 

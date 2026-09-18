@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useT } from '../../core/i18n'
 import type { MessageKey } from '../../core/i18n/en'
 import { useSystemStore } from '../../core/store/system'
-import { wallpapers } from '../../config/shell'
+import { wallpapers } from '../../config/wallpapers'
 import { PageHead, Row, SubNav, ToggleRow } from './shared'
 
 type PersPage = 'background' | 'lockscreen' | 'colors'
