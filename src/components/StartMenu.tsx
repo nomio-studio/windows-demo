@@ -33,6 +33,7 @@ export default function StartMenu({ exiting }: { exiting?: boolean }) {
   const openApp = useWindowsStore((s) => s.openApp)
   const setFlyout = useSystemStore((s) => s.setFlyout)
   const setPhase = useSystemStore((s) => s.setPhase)
+  const accent = useSystemStore((s) => s.accent)
   const t = useT()
   const locale = useLocale()
   const [expanded, setExpanded] = useState(false)
@@ -190,7 +191,7 @@ export default function StartMenu({ exiting }: { exiting?: boolean }) {
                     key={`${tile.appId}-${i}`}
                     className={`anim-tile-in group relative flex items-center justify-center ${TILE_SPAN[tile.size]} outline outline-1 outline-transparent transition-transform hover:outline-white/50 active:scale-95`}
                     style={{
-                      background: tile.color ?? app.color ?? '#0078D7',
+                      background: tile.color ?? app.color ?? accent,
                       animationDelay: `${i * 30}ms`,
                     }}
                     onClick={() => {

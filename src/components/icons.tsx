@@ -5,6 +5,7 @@ import {
   Apps24Regular,
   AppsListDetailRegular,
   ArrowClockwise16Regular,
+  ArrowDownload24Regular,
   ArrowLeft16Regular,
   ArrowRight16Regular,
   ArrowSync24Regular,
@@ -36,10 +37,12 @@ import {
   Games24Regular,
   Globe24Regular,
   Grid16Regular,
+  History24Regular,
   Home16Regular,
   Image24Color,
   Image24Filled,
   Info16Regular,
+  Keyboard24Regular,
   LineHorizontal116Regular,
   Location24Regular,
   LockClosed16Regular,
@@ -48,6 +51,7 @@ import {
   Maximize16Regular,
   Mic24Color,
   MoreHorizontal20Regular,
+  Cursor24Regular,
   MusicNote224Filled,
   Navigation24Regular,
   PaintBrush24Color,
@@ -57,12 +61,15 @@ import {
   Pin16Regular,
   PinOff16Regular,
   Power24Regular,
+  Print24Regular,
+  Record24Regular,
   Rename16Regular,
   Search24Regular,
   Settings24Color,
   Shield24Color,
   ShieldGlobe24Regular,
   ShieldKeyhole24Regular,
+  ShieldTask24Regular,
   ShoppingBag24Filled,
   SlideMultiple24Regular,
   Speaker224Regular,
@@ -183,6 +190,16 @@ export const GamepadIcon: IconType = Games24Regular
 export const NetworkIcon: IconType = Globe24Regular
 export const EaseIcon: IconType = Accessibility24Regular
 export const PrivacyIcon: IconType = ShieldKeyhole24Regular
+
+/* ---- Settings-page glyphs ---- */
+
+export const MouseIcon: IconType = Cursor24Regular
+export const KeyboardIcon: IconType = Keyboard24Regular
+export const PrinterIcon: IconType = Print24Regular
+export const HistoryIcon: IconType = History24Regular
+export const RecordIcon: IconType = Record24Regular
+export const DownloadIcon: IconType = ArrowDownload24Regular
+export const ShieldTaskIcon: IconType = ShieldTask24Regular
 
 /* ---- File-operation glyphs (Explorer / dialogs / desktop menus) ---- */
 

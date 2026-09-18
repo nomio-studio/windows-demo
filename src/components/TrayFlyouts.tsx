@@ -2,11 +2,13 @@ import { LOCALES, useI18n, useT } from '../core/i18n'
 import { useSystemStore, type Flyout } from '../core/store/system'
 import type { IconType } from '../core/types'
 import { useWindowsStore } from '../core/store/windows'
+import { wifiNetworks } from '../config/shell'
 import { Slider, Toggle } from './ui'
 import {
   BluetoothIcon,
   CheckIcon,
   CloudIcon,
+  LockIcon,
   ShieldIcon,
   VolumeIcon,
   WifiIcon,
@@ -16,14 +18,6 @@ const panel = (exiting?: boolean) =>
   `${
     exiting ? 'anim-flyout-down' : 'anim-flyout-up'
   } absolute bottom-10 z-[55000] border border-black/60 bg-[#1f1f1f]/95 text-white shadow-2xl backdrop-blur-xl`
-
-const NETWORKS = [
-  'HomeNet-5G',
-  'CoffeeShop_Guest',
-  'xfinitywifi',
-  'Airport_Free_WiFi',
-  'Neighbor-2.4G',
-]
 
 /** Small flyouts anchored to the system tray. */
 export default function TrayFlyouts({
@@ -119,7 +113,10 @@ function Volume({ exiting }: { exiting?: boolean }) {
 function Network({ exiting }: { exiting?: boolean }) {
   const wifiOn = useSystemStore((s) => s.wifiOn)
   const toggleWifi = useSystemStore((s) => s.toggleWifi)
-  const toggleFlyout = useSystemStore((s) => s.toggleFlyout)
+  const wifiNetwork = useSystemStore((s) => s.wifiNetwork)
+  const setWifiNetwork = useSystemStore((s) => s.setWifiNetwork)
+  const setFlyout = useSystemStore((s) => s.setFlyout)
+  const openApp = useWindowsStore((s) => s.openApp)
   const t = useT()
   return (
     <div className={`${panel(exiting)} right-0 max-h-[420px] w-[340px] max-w-full overflow-y-auto`}>
@@ -129,20 +126,36 @@ function Network({ exiting }: { exiting?: boolean }) {
       </div>
       <div className="py-1">
         {wifiOn ? (
-          NETWORKS.map((n, i) => (
-            <button
-              key={n}
-              className="flex w-full items-center gap-3 px-4 py-2 text-left hover:bg-white/10"
-            >
-              <WifiIcon className={`size-4 ${i > 2 ? 'opacity-50' : ''}`} />
-              <span className="flex-1">
-                <span className="block text-[13px]">{n}</span>
-                <span className="block text-[11px] text-white/60">
-                  {i === 0 ? t('net.connected') : t('net.secured')}
+          wifiNetworks.map((n) => {
+            const connected = n.ssid === wifiNetwork
+            return (
+              <button
+                key={n.ssid}
+                className={`flex w-full items-center gap-3 px-4 py-2 text-left ${
+                  connected ? 'bg-white/10' : 'hover:bg-white/10'
+                }`}
+                onClick={() => setWifiNetwork(n.ssid)}
+              >
+                <WifiIcon
+                  className={`size-4 ${n.signal < 2 ? 'opacity-50' : ''}`}
+                />
+                <span className="flex-1">
+                  <span className="block text-[13px]">{n.ssid}</span>
+                  <span className="block text-[11px] text-white/60">
+                    {connected
+                      ? t('net.connected')
+                      : n.secured
+                        ? t('net.secured')
+                        : t('net.open')}
+                  </span>
                 </span>
-              </span>
-            </button>
-          ))
+                {connected && <CheckIcon className="size-3.5 shrink-0" />}
+                {!connected && n.secured && (
+                  <LockIcon className="size-3 shrink-0 opacity-50" />
+                )}
+              </button>
+            )
+          })
         ) : (
           <p className="px-4 py-3 text-[13px] text-white/60">
             {t('net.off')}
@@ -151,7 +164,10 @@ function Network({ exiting }: { exiting?: boolean }) {
       </div>
       <button
         className="w-full border-t border-white/10 px-4 py-2.5 text-left text-[13px] text-white/80 hover:bg-white/10"
-        onClick={() => toggleFlyout('actionCenter')}
+        onClick={() => {
+          openApp('settings', { launch: { page: 'network' } })
+          setFlyout(null)
+        }}
       >
         {t('net.settings')}
       </button>

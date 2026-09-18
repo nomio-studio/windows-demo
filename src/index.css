@@ -356,9 +356,10 @@ input[type="range"]::-moz-range-thumb:hover {
   animation: toast-in 0.25s cubic-bezier(0.1, 0.9, 0.2, 1);
 }
 
-/* Honour the OS "show animations" setting: collapse every CSS
+/* Honour the OS "show animations" setting AND the in-app Ease of
+   Access toggle (data-reduce-motion on <html>): collapse every CSS
    animation/transition to instant. (JS-driven window motion checks
-   the same media query in WindowFrame.) */
+   the same sources in WindowFrame.) */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -367,4 +368,19 @@ input[type="range"]::-moz-range-thumb:hover {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+html[data-reduce-motion='true'] *,
+html[data-reduce-motion='true'] *::before,
+html[data-reduce-motion='true'] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}
+
+/* Settings > Ease of Access > Transparency effects — kills the
+   frosted-glass backdrop on the taskbar, menus and flyouts. */
+html[data-no-blur='true'] .backdrop-blur-md,
+html[data-no-blur='true'] .backdrop-blur-xl,
+html[data-no-blur='true'] .backdrop-blur {
+  backdrop-filter: none !important;
 }

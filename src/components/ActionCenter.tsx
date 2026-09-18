@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { formatTime } from '../core/hooks'
 import { useLocale, useT } from '../core/i18n'
+import { usePwaStore } from '../core/store/pwa'
 import { useSystemStore } from '../core/store/system'
 import { Slider } from './ui'
 import {
@@ -53,9 +54,15 @@ export default function ActionCenter({ exiting }: { exiting?: boolean }) {
   const toggleWifi = useSystemStore((s) => s.toggleWifi)
   const quick = useSystemStore((s) => s.quickActions)
   const toggleQuick = useSystemStore((s) => s.toggleQuickAction)
+  const accent = useSystemStore((s) => s.accent)
+  const updateReady = usePwaStore((s) => s.updateReady)
   const [notes, setNotes] = useState(INITIAL_NOTIFICATIONS)
   const t = useT()
   const locale = useLocale()
+
+  // The Windows Update entry only appears once an update is really
+  // installed (the toast is the primary signal).
+  const shownNotes = notes.filter((n) => n.app !== 'app.wu' || updateReady)
 
   const tiles: { id: string; label: string; icon: IconType; on: boolean; toggle: () => void }[] = [
     { id: 'tablet', label: 'qa.tablet', icon: TabletIcon, on: !!quick.tablet, toggle: () => toggleQuick('tablet') },
@@ -76,7 +83,7 @@ export default function ActionCenter({ exiting }: { exiting?: boolean }) {
     >
       {/* Notifications */}
       <div className="min-h-0 flex-1 overflow-y-auto p-3">
-        {notes.length > 0 ? (
+        {shownNotes.length > 0 ? (
           <>
             <div className="mb-2 flex items-center justify-between px-1">
               <span className="text-[12px] text-white/60">{t('ac.notifications')}</span>
@@ -87,7 +94,7 @@ export default function ActionCenter({ exiting }: { exiting?: boolean }) {
                 {t('ac.clearAll')}
               </button>
             </div>
-            {notes.map((n, i) => (
+            {shownNotes.map((n, i) => (
               <div key={i} className="group relative mb-2 bg-[#383838] p-3">
                 <div className="mb-1 flex items-center gap-1.5 text-[11px] text-white/60">
                   <n.icon className="size-3.5" />
@@ -95,7 +102,7 @@ export default function ActionCenter({ exiting }: { exiting?: boolean }) {
                   <span>{formatTime(n.time, locale)}</span>
                   <button
                     className="invisible ml-1 group-hover:visible"
-                    onClick={() => setNotes((v) => v.filter((_, j) => j !== i))}
+                    onClick={() => setNotes((v) => v.filter((x) => x !== n))}
                     aria-label={t('aria.dismiss')}
                   >
                     <CloseIcon className="size-2.5" />
@@ -125,8 +132,9 @@ export default function ActionCenter({ exiting }: { exiting?: boolean }) {
           <button
             key={tile.id}
             className={`flex h-[74px] flex-col items-center justify-center gap-1.5 px-1 transition-all duration-150 active:scale-95 ${
-              tile.on ? 'bg-[#0078d7] hover:bg-[#1a86e0]' : 'bg-[#2e2e2e] hover:bg-[#3d3d3d]'
+              tile.on ? 'hover:brightness-110' : 'bg-[#2e2e2e] hover:bg-[#3d3d3d]'
             }`}
+            style={tile.on ? { background: accent } : undefined}
             onClick={tile.toggle}
           >
             <tile.icon className="size-5" />

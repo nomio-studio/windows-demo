@@ -1,7 +1,12 @@
+import { createRequire } from 'node:module'
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
+
+const pkg = createRequire(import.meta.url)('./package.json') as {
+  version: string
+}
 
 const icon = (src: string, sizes: string, purpose?: string) => ({
   src,
@@ -108,4 +113,7 @@ export default defineConfig({
     }),
   ],
   base: '/windows-demo/',
+  define: {
+    __APP_VERSION__: JSON.stringify(pkg.version),
+  },
 })

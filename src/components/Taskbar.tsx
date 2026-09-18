@@ -31,6 +31,7 @@ export default function Taskbar({ onMenu }: Props) {
   const flyout = useSystemStore((s) => s.flyout)
   const toggleFlyout = useSystemStore((s) => s.toggleFlyout)
   const wifiOn = useSystemStore((s) => s.wifiOn)
+  const accent = useSystemStore((s) => s.accent)
   const now = useClock()
   const t = useT()
   const locale = useLocale()
@@ -112,8 +113,9 @@ export default function Taskbar({ onMenu }: Props) {
               <Icon className="size-6" />
               <span
                 className={`absolute inset-x-1.5 bottom-0 h-[2px] transition-colors duration-150 ${
-                  focused ? 'bg-[#76b9ed]' : open ? 'bg-white/40' : ''
+                  focused ? '' : open ? 'bg-white/40' : ''
                 }`}
+                style={focused ? { background: accent } : undefined}
               />
             </button>
           )

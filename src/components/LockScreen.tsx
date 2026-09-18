@@ -12,6 +12,7 @@ import { AvatarIcon, ChevronRight, WifiIcon } from './icons'
 export default function LockScreen() {
   const phase = useSystemStore((s) => s.phase)
   const setPhase = useSystemStore((s) => s.setPhase)
+  const lockWallpaper = useSystemStore((s) => s.lockWallpaper)
   const now = useClock()
   const t = useT()
   const locale = useLocale()
@@ -32,7 +33,7 @@ export default function LockScreen() {
   return (
     <div
       className="anim-fade relative h-full w-full overflow-hidden"
-      style={wallpapers[1].style}
+      style={(wallpapers[lockWallpaper] ?? wallpapers[1]).style}
       onClick={phase === 'lock' ? () => setPhase('signin') : undefined}
     >
       {/* soft vignette */}

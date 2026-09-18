@@ -1,12 +1,14 @@
 import { useMemo } from 'react'
 import { formatDateLong, useClock } from '../core/hooks'
 import { useLocale, useT } from '../core/i18n'
+import { useSystemStore } from '../core/store/system'
 
 /** Clock flyout: digital time + mini month calendar. */
 export default function CalendarFlyout({ exiting }: { exiting?: boolean }) {
   const now = useClock()
   const t = useT()
   const locale = useLocale()
+  const accent = useSystemStore((s) => s.accent)
   const dow = t('cal.dow').split(' ')
 
   const { label, weeks, today } = useMemo(() => {
@@ -60,9 +62,10 @@ export default function CalendarFlyout({ exiting }: { exiting?: boolean }) {
                 d === null
                   ? ''
                   : d === today
-                    ? 'rounded-full bg-[#0078d7] font-semibold'
+                    ? 'rounded-full font-semibold'
                     : 'rounded-full hover:bg-white/15'
               }`}
+              style={d === today ? { background: accent } : undefined}
             >
               {d ?? ''}
             </span>

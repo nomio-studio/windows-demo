@@ -1,6 +1,5 @@
 import { registerSW } from 'virtual:pwa-register'
 import { usePwaStore } from './store/pwa'
-import { useWindowsStore } from './store/windows'
 
 interface LaunchParams {
   files?: FileSystemFileHandle[]
@@ -22,23 +21,19 @@ export function initPwa(): void {
   // The worker ships skipWaiting + clientsClaim, so each deploy's worker
   // takes control as soon as it installs — even for clients stuck on an
   // old precache (a waiting worker is never activated by a plain reload,
-  // so prompt-style flows can strand users on stale builds). When a new
-  // controller arrives, reload once into the new version; with windows
-  // open, defer to the next visit rather than tear down the session.
-  // The first-ever claim (no prior controller) is not an update —
-  // don't reload a fresh install.
+  // so prompt-style flows can strand users on stale builds). A new
+  // controller means an update is ready — surface it via the store and
+  // let UpdateToast / Settings > Update own the restart UX. The
+  // first-ever claim (no prior controller) is not an update.
   const sw = navigator.serviceWorker
   if (sw) {
     let hadController = sw.controller != null
-    let reloading = false
     sw.addEventListener('controllerchange', () => {
       if (!hadController) {
         hadController = true
         return
       }
-      if (reloading || useWindowsStore.getState().windows.length > 0) return
-      reloading = true
-      window.location.reload()
+      usePwaStore.getState().setUpdateReady(true)
     })
   }
 

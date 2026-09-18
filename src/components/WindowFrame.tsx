@@ -2,6 +2,7 @@ import { useLayoutEffect, useRef, useState } from 'react'
 import type { PointerEvent as ReactPointerEvent } from 'react'
 import { useT } from '../core/i18n'
 import { getApp } from '../core/registry'
+import { useSystemStore } from '../core/store/system'
 import { shellSize, useWindowsStore } from '../core/store/windows'
 import type { WindowState } from '../core/types'
 import { CloseIcon, MaximizeIcon, MinimizeIcon, RestoreIcon } from './icons'
@@ -9,7 +10,8 @@ import { CloseIcon, MaximizeIcon, MinimizeIcon, RestoreIcon } from './icons'
 const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v))
 
 const reducedMotion = () =>
-  window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+  window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ||
+  useSystemStore.getState().reduceMotion
 
 /**
  * A window: title bar with drag/double-click-maximize, edge+corner

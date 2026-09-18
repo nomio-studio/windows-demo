@@ -14,6 +14,8 @@ export default function App() {
   const phase = useSystemStore((s) => s.phase)
   const locale = useI18n((s) => s.locale)
   const fsInit = useFsStore((s) => s.init)
+  const reduceMotion = useSystemStore((s) => s.reduceMotion)
+  const transparency = useSystemStore((s) => s.transparency)
 
   // Mount the OPFS-backed filesystem once per session (boot).
   useEffect(() => {
@@ -24,6 +26,13 @@ export default function App() {
   useEffect(() => {
     document.documentElement.lang = locale
   }, [locale])
+
+  // Publish accessibility/appearance prefs for CSS (see index.css).
+  useEffect(() => {
+    const el = document.documentElement
+    el.dataset.reduceMotion = String(reduceMotion)
+    el.dataset.noBlur = String(!transparency)
+  }, [reduceMotion, transparency])
 
   return (
     <div className="h-full w-full overflow-hidden bg-black">

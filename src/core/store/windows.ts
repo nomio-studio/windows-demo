@@ -78,6 +78,16 @@ export const useWindowsStore = create<WindowsStore>()((set, get) => ({
     if (app.singleInstance) {
       const existing = s.windows.find((w) => w.appId === appId)
       if (existing) {
+        // Re-target the existing window when a new payload arrives —
+        // deep links (e.g. Settings > a specific page) navigate rather
+        // than silently focusing a stale view.
+        if (opts?.launch !== undefined) {
+          set((st) => ({
+            windows: st.windows.map((w) =>
+              w.id === existing.id ? { ...w, launch: opts.launch } : w,
+            ),
+          }))
+        }
         s.focusWindow(existing.id)
         return
       }

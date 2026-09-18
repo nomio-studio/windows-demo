@@ -21,6 +21,7 @@ import SearchFlyout from './SearchFlyout'
 import StartMenu from './StartMenu'
 import Taskbar from './Taskbar'
 import TrayFlyouts from './TrayFlyouts'
+import UpdateToast from './UpdateToast'
 import Wallpaper from './Wallpaper'
 import WindowFrame from './WindowFrame'
 import { Presence } from './ui'
@@ -53,6 +54,7 @@ export default function DesktopShell() {
   const iconSize = useSystemStore((s) => s.desktopIconSize)
   const setIconSize = useSystemStore((s) => s.setDesktopIconSize)
   const brightness = useSystemStore((s) => s.brightness)
+  const nightlight = useSystemStore((s) => s.quickActions.nightlight)
   const pendingFile = usePwaStore((s) => s.pendingFile)
   const setPendingFile = usePwaStore((s) => s.setPendingFile)
   const fs = useFsStore()
@@ -334,6 +336,13 @@ export default function DesktopShell() {
           uiPath={propsNode.uiPath}
           onClose={() => setPropsNode(null)}
         />
+      )}
+
+      <UpdateToast />
+
+      {/* Night-light veil — a warm wash under the brightness dimmer. */}
+      {nightlight && (
+        <div className="pointer-events-none fixed inset-0 z-[80000] bg-[#ff9d45] opacity-[0.13]" />
       )}
 
       {/* Brightness veil */}

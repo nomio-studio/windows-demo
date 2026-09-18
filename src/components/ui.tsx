@@ -1,6 +1,7 @@
 /* Small shared controls used across flyouts and apps. */
 
 import { useEffect, useState, type ReactNode } from 'react'
+import { useSystemStore } from '../core/store/system'
 
 /**
  * Keeps `value` mounted briefly after it goes null so an outro
@@ -38,16 +39,20 @@ export function Toggle({
   checked: boolean
   onChange: () => void
 }) {
+  const accent = useSystemStore((s) => s.accent)
   return (
     <button
       role="switch"
       aria-checked={checked}
       onClick={onChange}
       className={`relative h-5 w-11 shrink-0 rounded-full border transition-colors ${
-        checked
-          ? 'border-[#0078d7] bg-[#0078d7]'
-          : 'border-current bg-transparent opacity-80'
+        checked ? '' : 'border-current bg-transparent opacity-80'
       }`}
+      style={
+        checked
+          ? { borderColor: accent, backgroundColor: accent }
+          : undefined
+      }
     >
       <span
         className={`absolute top-1/2 size-3 -translate-y-1/2 rounded-full transition-all ${
@@ -69,6 +74,7 @@ export function Slider({
   min?: number
   max?: number
 }) {
+  const accent = useSystemStore((s) => s.accent)
   const pct = ((value - min) / (max - min)) * 100
   return (
     <input
@@ -79,7 +85,7 @@ export function Slider({
       onChange={(e) => onChange(Number(e.target.value))}
       className="w-full"
       style={{
-        background: `linear-gradient(to right, #0078d7 ${pct}%, #6a6a6a ${pct}%)`,
+        background: `linear-gradient(to right, ${accent} ${pct}%, #6a6a6a ${pct}%)`,
       }}
     />
   )
