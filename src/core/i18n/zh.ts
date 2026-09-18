@@ -301,7 +301,7 @@ export const zh: Messages = {
 
   /* ---- Wallpapers ---- */
   'wp.hero': 'Windows 英雄',
-  'wp.teal': '青色绽放',
+  'wp.lake': '暮色湖泊',
   'wp.midnight': '午夜',
   'wp.blue': '纯蓝',
 

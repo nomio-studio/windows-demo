@@ -1,4 +1,4 @@
-import type { ComponentType } from 'react'
+import { useId, type ComponentType, type ReactNode } from 'react'
 import {
   Accessibility24Regular,
   Airplane24Regular,
@@ -11,8 +11,6 @@ import {
   ArrowUndo16Regular,
   ArrowUp16Regular,
   Battery924Regular,
-  BinRecycle24Filled,
-  BinRecycleFull24Filled,
   Bluetooth24Regular,
   BrightnessHigh24Regular,
   Calculator24Filled,
@@ -29,20 +27,14 @@ import {
   Copy16Regular,
   Cut16Regular,
   Delete16Regular,
-  Desktop24Filled,
   Desktop24Regular,
   Dismiss16Regular,
-  Document24Color,
   DocumentAdd16Regular,
-  DocumentText24Color,
-  Folder24Filled,
   FolderAdd16Regular,
   Games24Regular,
   Globe24Regular,
   Grid16Regular,
-  HardDrive24Filled,
   Home16Regular,
-  Image24Color,
   Image24Filled,
   Info16Regular,
   LineHorizontal116Regular,
@@ -210,20 +202,220 @@ export const TaskMgrIcon: IconType = TaskListLtr24Regular
 
 export const SettingsIcon: IconType = Settings24Color
 export const StarIcon: IconType = Star16Color
-export const FileIcon: IconType = Document24Color
-export const DocFileIcon: IconType = DocumentText24Color
-export const ImageFileIcon: IconType = Image24Color
 export const CloudIcon: IconType = Cloud24Color
 export const ShieldIcon: IconType = Shield24Color
 export const MicIcon: IconType = Mic24Color
 export const PaintIcon: IconType = PaintBrush24Color
-export const FolderIcon: IconType = F(Folder24Filled, '#F4B400')
-export const ThisPCIcon: IconType = F(Desktop24Filled, '#3E9BE8')
-export const RecycleBinIcon: IconType = F(BinRecycle24Filled, '#5B9BD5')
-export const RecycleBinFullIcon: IconType = F(BinRecycleFull24Filled, '#5B9BD5')
 export const CalculatorIcon: IconType = F(Calculator24Filled, '#3F3F3F')
-export const DriveIcon: IconType = F(HardDrive24Filled, '#4A90C4')
 export const StickyNoteIcon: IconType = F(Sticker24Filled, '#FFD54F')
+
+/* ---- Windows resource icons (hand-drawn, glossy Win10 style) ----
+ * Desktop/file-system icons get gradients, edge highlights and light
+ * perspective — real Win10 icons aren't flat silhouettes. Gradient ids
+ * are per-instance via useId so repeated mounts can't collide. */
+
+const useUid = () => useId().replace(/[^a-zA-Z0-9]/g, '')
+
+/** Yellow folder: tabbed back panel, paper sheet, bright front flap. */
+export const FolderIcon: IconType = ({ className }) => {
+  const id = useUid()
+  return (
+    <svg viewBox="0 0 48 48" className={className}>
+      <defs>
+        <linearGradient id={`${id}b`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#E5A521" />
+          <stop offset="1" stopColor="#C98A0E" />
+        </linearGradient>
+        <linearGradient id={`${id}f`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#FFD868" />
+          <stop offset="1" stopColor="#F0A725" />
+        </linearGradient>
+      </defs>
+      <path
+        d="M9 16a2 2 0 0 1 2-2h7.5l3 3H39a2 2 0 0 1 2 2v5.5H9z"
+        fill={`url(#${id}b)`}
+      />
+      <path
+        d="M11 18.5h26v6h-26z"
+        fill="#EDF3FA"
+        stroke="#C7D2E0"
+        strokeWidth=".6"
+      />
+      <path
+        d="M7.5 22h33l2.6 18a2 2 0 0 1-1.9 2H6.8a2 2 0 0 1-1.9-2z"
+        fill={`url(#${id}f)`}
+      />
+      <path d="M7.5 22h33" stroke="#E8960F" strokeWidth=".7" fill="none" />
+    </svg>
+  )
+}
+
+/** This PC: dark-bezel monitor, glossy blue screen, neck and base. */
+export const ThisPCIcon: IconType = ({ className }) => {
+  const id = useUid()
+  return (
+    <svg viewBox="0 0 48 48" className={className}>
+      <defs>
+        <linearGradient id={`${id}s`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#8FCCF4" />
+          <stop offset="1" stopColor="#1E6DBD" />
+        </linearGradient>
+        <linearGradient id={`${id}m`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#3D454F" />
+          <stop offset="1" stopColor="#20262D" />
+        </linearGradient>
+      </defs>
+      <path d="M20.5 34h7l1.3 6H19.2z" fill="#4E5763" />
+      <rect x="14.5" y="40" width="19" height="2.6" rx="1.3" fill="#3A434D" />
+      <rect x="5.5" y="7.5" width="37" height="27" rx="2.5" fill={`url(#${id}m)`} />
+      <rect x="8" y="10" width="32" height="22" rx=".8" fill={`url(#${id}s)`} />
+      <path d="M8 10h15L10 32H8z" fill="#FFF" opacity=".18" />
+      <circle cx="24" cy="33.2" r=".9" fill="#8A939E" />
+    </svg>
+  )
+}
+
+/** Recycle bin: tapered silver mesh basket; full adds crumpled paper. */
+const BinSvg = ({
+  className,
+  full,
+}: {
+  className?: string
+  full?: boolean
+}) => {
+  const id = useUid()
+  return (
+    <svg viewBox="0 0 48 48" className={className}>
+      <defs>
+        <linearGradient id={`${id}b`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#D9E1EA" />
+          <stop offset="1" stopColor="#93A1B4" />
+        </linearGradient>
+      </defs>
+      {full && (
+        <>
+          <path
+            d="M14 9.5l6-3.8 8 2.8 7-2.8 4.8 4.8-4 3.2-9-2-7.8 3z"
+            fill="#F2F6FA"
+            stroke="#C2CDD9"
+            strokeWidth=".7"
+          />
+          <path
+            d="M20 8.8q2-3 5-2t4 3-1 5-5 2-4-3z"
+            fill="#E4EBF3"
+            stroke="#B4C0CE"
+            strokeWidth=".7"
+          />
+        </>
+      )}
+      <path
+        d="M10 13l3.4 28a3 3 0 0 0 3 2.2h15.2a3 3 0 0 0 3-2.2l3.4-28z"
+        fill={`url(#${id}b)`}
+      />
+      <g stroke="#EDF2F8" strokeWidth=".8" opacity=".55" fill="none">
+        <path d="M15 13.5l1.6 27M21 13.8l.8 27.5M27 13.8l-.8 27.5M33 13.5l-1.6 27" />
+        <path d="M12 21q12 3.5 24 0M12.8 28q11.2 3.2 22.4 0M13.6 35q10.4 2.8 20.8 0" />
+      </g>
+      <ellipse cx="24" cy="13" rx="14" ry="4.3" fill="#7E8D9D" />
+      <ellipse cx="24" cy="13" rx="11.6" ry="3" fill="#5D6B7B" />
+      <path
+        d="M10 13a14 4.3 0 0 0 28 0"
+        fill="none"
+        stroke="#AEBCCA"
+        strokeWidth=".8"
+      />
+    </svg>
+  )
+}
+export const RecycleBinIcon: IconType = (p) => <BinSvg {...p} />
+export const RecycleBinFullIcon: IconType = (p) => <BinSvg {...p} full />
+
+/** Drive: brushed-metal slab, blue capacity bar, green LED. */
+export const DriveIcon: IconType = ({ className }) => {
+  const id = useUid()
+  return (
+    <svg viewBox="0 0 48 48" className={className}>
+      <defs>
+        <linearGradient id={`${id}c`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#DDE4EC" />
+          <stop offset="1" stopColor="#97A3B3" />
+        </linearGradient>
+      </defs>
+      <rect x="6" y="14" width="36" height="21" rx="3" fill={`url(#${id}c)`} />
+      <path d="M6 17.5h36" stroke="#FFF" strokeWidth=".8" opacity=".6" />
+      <rect x="8.8" y="17" width="30.4" height="15" rx="1.5" fill="#B7C1CE" />
+      <rect x="10.8" y="19" width="26.4" height="11" rx="1" fill="#CCD4DE" />
+      <rect x="12.5" y="27.6" width="18" height="1.8" rx=".9" fill="#3FA0E8" />
+      <circle cx="34.8" cy="28.5" r="1.4" fill="#63D374" />
+    </svg>
+  )
+}
+
+/** Page icon: white sheet + folded corner; children add content. */
+const PageSvg = ({
+  className,
+  children,
+}: {
+  className?: string
+  children?: ReactNode
+}) => {
+  const id = useUid()
+  return (
+    <svg viewBox="0 0 48 48" className={className}>
+      <defs>
+        <linearGradient id={`${id}p`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#FFFFFF" />
+          <stop offset="1" stopColor="#E7EDF5" />
+        </linearGradient>
+      </defs>
+      <path
+        d="M13 5.5h15L36 13v28a2 2 0 0 1-2 2H13a2 2 0 0 1-2-2V7.5a2 2 0 0 1 2-2z"
+        fill={`url(#${id}p)`}
+        stroke="#AFBAC8"
+        strokeWidth=".8"
+      />
+      <path
+        d="M28 5.5V12a1 1 0 0 0 1 1h7z"
+        fill="#D6DEE9"
+        stroke="#AFBAC8"
+        strokeWidth=".8"
+      />
+      {children}
+    </svg>
+  )
+}
+export const FileIcon: IconType = (p) => (
+  <PageSvg {...p}>
+    <rect x="16" y="20" width="16" height="1.6" rx=".8" fill="#B9C6D6" />
+    <rect x="16" y="24" width="16" height="1.6" rx=".8" fill="#B9C6D6" />
+    <rect x="16" y="28" width="11" height="1.6" rx=".8" fill="#B9C6D6" />
+  </PageSvg>
+)
+export const DocFileIcon: IconType = (p) => (
+  <PageSvg {...p}>
+    <rect x="16" y="17.5" width="16" height="1.8" rx=".9" fill="#6FA8DC" />
+    <rect x="16" y="22" width="16" height="1.8" rx=".9" fill="#8FBCE8" />
+    <rect x="16" y="26.5" width="16" height="1.8" rx=".9" fill="#8FBCE8" />
+    <rect x="16" y="31" width="10" height="1.8" rx=".9" fill="#8FBCE8" />
+  </PageSvg>
+)
+export const ImageFileIcon: IconType = (p) => (
+  <PageSvg {...p}>
+    <rect x="15" y="18.5" width="18" height="13" rx="1" fill="#A9D9F2" />
+    <circle cx="19.5" cy="22.5" r="1.8" fill="#FFD76B" />
+    <path d="M15 31.5l6-7 4 4.5 4-5.5 4 8z" fill="#5C9E62" />
+    <rect
+      x="15"
+      y="18.5"
+      width="18"
+      height="13"
+      rx="1"
+      fill="none"
+      stroke="#8FB4CC"
+      strokeWidth=".6"
+    />
+  </PageSvg>
+)
 
 /* ---- Modern-app glyphs (white on the app's accent tile) ---- */
 

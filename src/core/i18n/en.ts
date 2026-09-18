@@ -303,7 +303,7 @@ export const en = {
 
   /* ---- Wallpapers ---- */
   'wp.hero': 'Windows Hero',
-  'wp.teal': 'Teal Bloom',
+  'wp.lake': 'Twilight Lake',
   'wp.midnight': 'Midnight',
   'wp.blue': 'Solid Blue',
 

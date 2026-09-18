@@ -9,6 +9,8 @@ import {
   MoviesIcon,
   MusicIcon,
   NotepadIcon,
+  RecycleBinIcon,
+  ThisPCIcon,
 } from '../../components/icons'
 
 export interface FsNode {
@@ -187,10 +189,10 @@ export const navEntries: NavEntry[] = [
   { labelKey: 'fs.downloads', path: ['Quick access', 'Downloads'], icon: FolderIcon, indent: true },
   { labelKey: 'fs.documents', path: ['Quick access', 'Documents'], icon: FolderIcon, indent: true },
   { labelKey: 'fs.pictures', path: ['Quick access', 'Pictures'], icon: FolderIcon, indent: true },
-  { labelKey: 'fs.thisPC', path: ['This PC'], icon: DriveIcon },
+  { labelKey: 'fs.thisPC', path: ['This PC'], icon: ThisPCIcon },
   { labelKey: 'fs.driveC', path: ['This PC', 'Local Disk (C:)'], icon: DriveIcon, indent: true },
   { labelKey: 'fs.driveD', path: ['This PC', 'Data (D:)'], icon: DriveIcon, indent: true },
-  { labelKey: 'fs.recycleBin', path: ['Recycle Bin'], icon: FolderIcon },
+  { labelKey: 'fs.recycleBin', path: ['Recycle Bin'], icon: RecycleBinIcon },
 ]
 
 /** OPFS path for a UI node path segment that exists under C:\. */
