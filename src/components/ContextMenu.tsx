@@ -6,6 +6,7 @@ interface Props {
   y: number
   items: ContextMenuItem[]
   onClose: () => void
+  exiting?: boolean
 }
 
 const ROW_H = 26
@@ -34,7 +35,7 @@ function MenuList({
                 item.onClick?.()
                 onClose()
               }}
-              className={`flex h-[26px] w-full items-center gap-2 px-2 text-left text-[12px] ${
+              className={`flex h-[26px] w-full items-center gap-2 px-2 text-left text-[12px] transition-colors duration-75 ${
                 item.disabled ? 'text-black/40' : 'group-hover:bg-[#d4d4d4]'
               }`}
             >
@@ -50,7 +51,7 @@ function MenuList({
             </button>
             {item.submenu && !item.disabled && (
               <div
-                className={`invisible absolute top-[-4px] z-10 group-hover:visible ${
+                className={`anim-menu absolute top-[-4px] z-10 hidden group-hover:block ${
                   flipX ? 'right-full' : 'left-full'
                 }`}
               >
@@ -68,7 +69,7 @@ function MenuList({
  * Classic Windows context menu. Rendered fixed at the cursor with
  * viewport clamping; an invisible backdrop swallows outside clicks.
  */
-export default function ContextMenu({ x, y, items, onClose }: Props) {
+export default function ContextMenu({ x, y, items, onClose, exiting }: Props) {
   const estH = items.length * (ROW_H + 1) + 8
   const cx = Math.max(0, Math.min(x, window.innerWidth - MENU_W - 8))
   const cy = Math.max(0, Math.min(y, window.innerHeight - estH - 8))
@@ -76,15 +77,20 @@ export default function ContextMenu({ x, y, items, onClose }: Props) {
   const flipX = cx + MENU_W * 2 + 8 > window.innerWidth
   return (
     <>
+      {!exiting && (
+        <div
+          className="fixed inset-0 z-[69000]"
+          onPointerDown={onClose}
+          onContextMenu={(e) => {
+            e.preventDefault()
+            onClose()
+          }}
+        />
+      )}
       <div
-        className="fixed inset-0 z-[69000]"
-        onPointerDown={onClose}
-        onContextMenu={(e) => {
-          e.preventDefault()
-          onClose()
-        }}
-      />
-      <div className="anim-menu fixed z-[70000]" style={{ left: cx, top: cy }}>
+        className={`${exiting ? 'anim-menu-out' : 'anim-menu'} fixed z-[70000]`}
+        style={{ left: cx, top: cy }}
+      >
         <MenuList items={items} onClose={onClose} flipX={flipX} />
       </div>
     </>

@@ -46,9 +46,9 @@ export default function Taskbar({ onMenu }: Props) {
       className="absolute inset-x-0 bottom-0 z-[60000] flex h-10 items-stretch bg-[#101010]/95 text-white backdrop-blur-md"
       onContextMenu={(e) => onMenu(e, 'taskbar')}
     >
-      {/* Start button */}
+      {/* Start button — the logo lights blue on hover, like Win10. */}
       <button
-        className={`flex w-12 items-center justify-center ${hover} ${
+        className={`group flex w-12 items-center justify-center ${hover} ${
           flyout === 'start' ? 'bg-white/10' : ''
         }`}
         onClick={() => toggleFlyout('start')}
@@ -58,7 +58,7 @@ export default function Taskbar({ onMenu }: Props) {
         }}
         aria-label={t('aria.start')}
       >
-        <WindowsLogo className="size-5 text-white hover:text-[#4da6e8]" />
+        <WindowsLogo className="size-5 text-white transition-colors group-hover:text-[#4da6e8]" />
       </button>
 
       {/* Search: icon on small screens, expanding box on larger */}
@@ -178,7 +178,7 @@ export default function Taskbar({ onMenu }: Props) {
         </button>
         {/* Show desktop sliver */}
         <button
-          className="w-[6px] hover:bg-white/20"
+          className="w-[6px] transition-colors hover:bg-white/20"
           onClick={minimizeAll}
           aria-label={t('aria.showDesktop')}
           title={t('aria.showDesktop')}

@@ -126,6 +126,7 @@ textarea,
   border: 4px solid transparent;
   background-clip: padding-box;
   border-radius: 8px;
+  transition: background-color 0.15s ease;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(155, 155, 155, 0.9);
@@ -154,6 +155,13 @@ input[type="range"]::-webkit-slider-thumb {
   border-radius: 50%;
   background: #0078d7;
   border: none;
+  transition: transform 0.12s ease;
+}
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+input[type="range"]:active::-webkit-slider-thumb {
+  transform: scale(1);
 }
 input[type="range"]::-moz-range-thumb {
   width: 16px;
@@ -161,6 +169,10 @@ input[type="range"]::-moz-range-thumb {
   border-radius: 50%;
   background: #0078d7;
   border: none;
+  transition: transform 0.12s ease;
+}
+input[type="range"]::-moz-range-thumb:hover {
+  transform: scale(1.2);
 }
 
 @keyframes flyout-up {
@@ -267,12 +279,49 @@ input[type="range"]::-moz-range-thumb {
     opacity: 1;
   }
 }
+/* Outros — panels leave the way they came, quickly. */
+@keyframes flyout-down {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(36px);
+    opacity: 0;
+  }
+}
+@keyframes flyout-out-right {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(64px);
+    opacity: 0;
+  }
+}
+@keyframes menu-out {
+  from {
+    transform: scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: scale(0.96);
+    opacity: 0;
+  }
+}
 
 .anim-flyout-up {
   animation: flyout-up 0.24s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .anim-flyout-right {
   animation: flyout-right 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.anim-flyout-down {
+  animation: flyout-down 0.14s ease-in forwards;
+}
+.anim-flyout-out-right {
+  animation: flyout-out-right 0.14s ease-in forwards;
 }
 .anim-fade {
   animation: lock-fade 0.3s ease-out;
@@ -282,6 +331,10 @@ input[type="range"]::-moz-range-thumb {
 }
 .anim-menu {
   animation: menu-pop 0.12s ease-out;
+  transform-origin: top left;
+}
+.anim-menu-out {
+  animation: menu-out 0.1s ease-in forwards;
   transform-origin: top left;
 }
 .anim-dot-orbit {
@@ -301,4 +354,17 @@ input[type="range"]::-moz-range-thumb {
 }
 .anim-toast-in {
   animation: toast-in 0.25s cubic-bezier(0.1, 0.9, 0.2, 1);
+}
+
+/* Honour the OS "show animations" setting: collapse every CSS
+   animation/transition to instant. (JS-driven window motion checks
+   the same media query in WindowFrame.) */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

@@ -29,7 +29,7 @@ export function BootScreen() {
     return () => clearTimeout(t)
   }, [setPhase])
   return (
-    <div className="flex h-full flex-col items-center justify-center bg-black">
+    <div className="anim-fade flex h-full flex-col items-center justify-center bg-black">
       <WindowsLogo className="anim-boot-glow mb-20 w-[130px] text-white" />
       <DotsSpinner />
     </div>
@@ -60,7 +60,7 @@ export function PowerScreen() {
   }
 
   return (
-    <div className="flex h-full flex-col items-center justify-center bg-[#0067b8]">
+    <div className="anim-fade flex h-full flex-col items-center justify-center bg-[#0067b8]">
       <DotsSpinner className="mb-5" />
       <p className="text-[26px] font-light text-white">
         {phase === 'restart' ? t('boot.restarting') : t('boot.shuttingDown')}

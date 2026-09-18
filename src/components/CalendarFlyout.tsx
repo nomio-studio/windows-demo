@@ -3,7 +3,7 @@ import { formatDateLong, useClock } from '../core/hooks'
 import { useLocale, useT } from '../core/i18n'
 
 /** Clock flyout: digital time + mini month calendar. */
-export default function CalendarFlyout() {
+export default function CalendarFlyout({ exiting }: { exiting?: boolean }) {
   const now = useClock()
   const t = useT()
   const locale = useLocale()
@@ -29,7 +29,11 @@ export default function CalendarFlyout() {
   }, [now, locale])
 
   return (
-    <div className="anim-flyout-up absolute bottom-10 right-0 z-[55000] max-h-[calc(100%-40px)] w-[340px] max-w-full overflow-y-auto border-l border-black/60 bg-[#1f1f1f]/95 p-4 text-white shadow-2xl backdrop-blur-xl">
+    <div
+      className={`${
+        exiting ? 'anim-flyout-down' : 'anim-flyout-up'
+      } absolute bottom-10 right-0 z-[55000] max-h-[calc(100%-40px)] w-[340px] max-w-full overflow-y-auto border-l border-black/60 bg-[#1f1f1f]/95 p-4 text-white shadow-2xl backdrop-blur-xl`}
+    >
       <p className="text-[40px] font-extralight leading-none">
         {now.toLocaleTimeString(locale, {
           hour: '2-digit',

@@ -23,12 +23,20 @@ import Taskbar from './Taskbar'
 import TrayFlyouts from './TrayFlyouts'
 import Wallpaper from './Wallpaper'
 import WindowFrame from './WindowFrame'
+import { Presence } from './ui'
 
 interface MenuState {
   x: number
   y: number
   items: ContextMenuItem[]
 }
+
+const TRAY_KINDS = new Set([
+  'trayOverflow',
+  'volume',
+  'network',
+  'language',
+])
 
 /**
  * The desktop session: wallpaper, icons, windows, taskbar, flyouts,
@@ -277,12 +285,20 @@ export default function DesktopShell() {
         <WindowFrame key={w.id} win={w} />
       ))}
 
-      {/* Flyouts */}
-      {flyout === 'start' && <StartMenu />}
-      {flyout === 'search' && <SearchFlyout />}
-      {flyout === 'calendar' && <CalendarFlyout />}
-      {flyout === 'actionCenter' && <ActionCenter />}
-      <TrayFlyouts />
+      {/* Flyouts — Presence keeps the last one mounted for its outro. */}
+      <Presence value={flyout}>
+        {(kind, exiting) => (
+          <>
+            {kind === 'start' && <StartMenu exiting={exiting} />}
+            {kind === 'search' && <SearchFlyout exiting={exiting} />}
+            {kind === 'calendar' && <CalendarFlyout exiting={exiting} />}
+            {kind === 'actionCenter' && <ActionCenter exiting={exiting} />}
+            {TRAY_KINDS.has(kind) && (
+              <TrayFlyouts kind={kind} exiting={exiting} />
+            )}
+          </>
+        )}
+      </Presence>
 
       {/* Click-away layer while a flyout is open */}
       {flyout && (
@@ -300,9 +316,17 @@ export default function DesktopShell() {
         onMenu={(e, kind) => openMenu(e, kind === 'winx' ? winxMenu() : taskbarMenu())}
       />
 
-      {menu && (
-        <ContextMenu x={menu.x} y={menu.y} items={menu.items} onClose={() => setMenu(null)} />
-      )}
+      <Presence value={menu} ms={110}>
+        {(m, exiting) => (
+          <ContextMenu
+            x={m.x}
+            y={m.y}
+            items={m.items}
+            exiting={exiting}
+            onClose={() => setMenu(null)}
+          />
+        )}
+      </Presence>
 
       {propsNode && (
         <FilePropertiesDialog

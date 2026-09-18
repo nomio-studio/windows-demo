@@ -1,5 +1,5 @@
 import { LOCALES, useI18n, useT } from '../core/i18n'
-import { useSystemStore } from '../core/store/system'
+import { useSystemStore, type Flyout } from '../core/store/system'
 import type { IconType } from '../core/types'
 import { useWindowsStore } from '../core/store/windows'
 import { Slider, Toggle } from './ui'
@@ -12,8 +12,10 @@ import {
   WifiIcon,
 } from './icons'
 
-const PANEL =
-  'anim-flyout-up absolute bottom-10 z-[55000] border border-black/60 bg-[#1f1f1f]/95 text-white shadow-2xl backdrop-blur-xl'
+const panel = (exiting?: boolean) =>
+  `${
+    exiting ? 'anim-flyout-down' : 'anim-flyout-up'
+  } absolute bottom-10 z-[55000] border border-black/60 bg-[#1f1f1f]/95 text-white shadow-2xl backdrop-blur-xl`
 
 const NETWORKS = [
   'HomeNet-5G',
@@ -24,17 +26,21 @@ const NETWORKS = [
 ]
 
 /** Small flyouts anchored to the system tray. */
-export default function TrayFlyouts() {
-  const flyout = useSystemStore((s) => s.flyout)
-
-  if (flyout === 'trayOverflow') return <Overflow />
-  if (flyout === 'volume') return <Volume />
-  if (flyout === 'network') return <Network />
-  if (flyout === 'language') return <Language />
+export default function TrayFlyouts({
+  kind,
+  exiting,
+}: {
+  kind: Exclude<Flyout, null>
+  exiting?: boolean
+}) {
+  if (kind === 'trayOverflow') return <Overflow exiting={exiting} />
+  if (kind === 'volume') return <Volume exiting={exiting} />
+  if (kind === 'network') return <Network exiting={exiting} />
+  if (kind === 'language') return <Language exiting={exiting} />
   return null
 }
 
-function Overflow() {
+function Overflow({ exiting }: { exiting?: boolean }) {
   const openApp = useWindowsStore((s) => s.openApp)
   const icons: [IconType, string][] = [
     [CloudIcon, 'app.onedrive'],
@@ -42,7 +48,7 @@ function Overflow() {
     [BluetoothIcon, 'app.bluetooth'],
   ]
   return (
-    <div className={`${PANEL} right-1.5 w-[170px] p-1`}>
+    <div className={`${panel(exiting)} right-1.5 w-[170px] p-1`}>
       <div className="grid grid-cols-4">
         {icons.map(([Icon, title], i) => (
           <button
@@ -59,14 +65,14 @@ function Overflow() {
 }
 
 /** Input-language flyout — the tray ENG/中 indicator's panel. */
-function Language() {
+function Language({ exiting }: { exiting?: boolean }) {
   const locale = useI18n((s) => s.locale)
   const setLocale = useI18n((s) => s.setLocale)
   const openApp = useWindowsStore((s) => s.openApp)
   const setFlyout = useSystemStore((s) => s.setFlyout)
   const t = useT()
   return (
-    <div className={`${PANEL} right-0 w-[300px] max-w-full py-1`}>
+    <div className={`${panel(exiting)} right-0 w-[300px] max-w-full py-1`}>
       {LOCALES.map((l) => (
         <button
           key={l.id}
@@ -98,11 +104,11 @@ function Language() {
   )
 }
 
-function Volume() {
+function Volume({ exiting }: { exiting?: boolean }) {
   const volume = useSystemStore((s) => s.volume)
   const setVolume = useSystemStore((s) => s.setVolume)
   return (
-    <div className={`${PANEL} right-2 flex h-14 w-72 max-w-[calc(100vw-16px)] items-center gap-3 px-4 sm:right-24`}>
+    <div className={`${panel(exiting)} right-2 flex h-14 w-72 max-w-[calc(100vw-16px)] items-center gap-3 px-4 sm:right-24`}>
       <VolumeIcon className="size-5 shrink-0" />
       <Slider value={volume} onChange={setVolume} />
       <span className="w-8 text-right text-[13px]">{volume}</span>
@@ -110,13 +116,13 @@ function Volume() {
   )
 }
 
-function Network() {
+function Network({ exiting }: { exiting?: boolean }) {
   const wifiOn = useSystemStore((s) => s.wifiOn)
   const toggleWifi = useSystemStore((s) => s.toggleWifi)
   const toggleFlyout = useSystemStore((s) => s.toggleFlyout)
   const t = useT()
   return (
-    <div className={`${PANEL} right-0 max-h-[420px] w-[340px] max-w-full overflow-y-auto`}>
+    <div className={`${panel(exiting)} right-0 max-h-[420px] w-[340px] max-w-full overflow-y-auto`}>
       <div className="flex items-center justify-between px-4 pb-1 pt-3">
         <span className="text-[15px]">Wi-Fi</span>
         <Toggle checked={wifiOn} onChange={toggleWifi} />

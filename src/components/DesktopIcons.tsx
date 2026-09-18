@@ -91,7 +91,7 @@ export default function DesktopIcons({ onMenu }: Props) {
       {icons.map((d, i) => (
         <button
           key={d.id}
-          className={`anim-icon-in flex ${sz.box} shrink-0 flex-col items-center gap-1 rounded-[2px] border transition-transform active:scale-95 ${
+          className={`anim-icon-in flex ${sz.box} shrink-0 flex-col items-center gap-1 rounded-[2px] border transition-[transform,background-color,border-color] duration-100 active:scale-95 ${
             selected === d.id
               ? 'border-[#7ab8ec]/70 bg-[#0078d7]/30'
               : 'border-transparent hover:border-white/25 hover:bg-white/10'

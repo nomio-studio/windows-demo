@@ -8,7 +8,7 @@ import { SearchIcon } from './icons'
 const QUICK = ['search.q1', 'search.q2', 'search.q3', 'app.settings']
 
 /** Cortana-style search panel above the taskbar search box. */
-export default function SearchFlyout() {
+export default function SearchFlyout({ exiting }: { exiting?: boolean }) {
   const openApp = useWindowsStore((s) => s.openApp)
   const setFlyout = useSystemStore((s) => s.setFlyout)
   const [query, setQuery] = useState('')
@@ -24,7 +24,11 @@ export default function SearchFlyout() {
         : t('search.evening')
 
   return (
-    <div className="anim-flyout-up absolute bottom-10 left-0 z-[55000] flex h-[600px] max-h-[calc(100%-40px)] w-[640px] max-w-full flex-col border border-black/60 bg-[#1f1f1f]/95 text-white shadow-2xl backdrop-blur-xl">
+    <div
+      className={`${
+        exiting ? 'anim-flyout-down' : 'anim-flyout-up'
+      } absolute bottom-10 left-0 z-[55000] flex h-[600px] max-h-[calc(100%-40px)] w-[640px] max-w-full flex-col border border-black/60 bg-[#1f1f1f]/95 text-white shadow-2xl backdrop-blur-xl`}
+    >
       <div className="flex h-11 shrink-0 items-center gap-2.5 border-b border-white/15 px-4">
         <SearchIcon className="size-4 text-white/70" />
         <input

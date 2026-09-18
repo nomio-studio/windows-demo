@@ -1,5 +1,36 @@
 /* Small shared controls used across flyouts and apps. */
 
+import { useEffect, useState, type ReactNode } from 'react'
+
+/**
+ * Keeps `value` mounted briefly after it goes null so an outro
+ * animation can finish. Children render with the last non-null value
+ * plus an `exiting` flag so they can swap their enter class for an
+ * exit one. Switching between two non-null values swaps instantly.
+ */
+export function Presence<T>({
+  value,
+  ms = 140,
+  children,
+}: {
+  value: T | null | undefined
+  ms?: number
+  children: (value: NonNullable<T>, exiting: boolean) => ReactNode
+}) {
+  const [last, setLast] = useState<NonNullable<T> | null>(null)
+  useEffect(() => {
+    if (value) {
+      setLast(value as NonNullable<T>)
+      return
+    }
+    if (!last) return
+    const t = setTimeout(() => setLast(null), ms)
+    return () => clearTimeout(t)
+  }, [value, last, ms])
+  const shown = (value ?? last) as NonNullable<T> | null
+  return shown ? children(shown, !value) : null
+}
+
 export function Toggle({
   checked,
   onChange,

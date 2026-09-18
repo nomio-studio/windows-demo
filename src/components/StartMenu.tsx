@@ -29,7 +29,7 @@ interface AppEntry {
 }
 
 /** Windows 10 start menu: rail + alphabetical app list + tile grid. */
-export default function StartMenu() {
+export default function StartMenu({ exiting }: { exiting?: boolean }) {
   const openApp = useWindowsStore((s) => s.openApp)
   const setFlyout = useSystemStore((s) => s.setFlyout)
   const setPhase = useSystemStore((s) => s.setPhase)
@@ -79,7 +79,9 @@ export default function StartMenu() {
 
   return (
     <div
-      className="anim-flyout-up absolute bottom-10 left-0 z-[55000] flex h-[640px] max-h-[calc(100%-40px)] max-w-[calc(100vw-6px)] overflow-hidden border border-black/60 bg-[#1f1f1f]/95 text-white shadow-2xl backdrop-blur-xl"
+      className={`${
+        exiting ? 'anim-flyout-down' : 'anim-flyout-up'
+      } absolute bottom-10 left-0 z-[55000] flex h-[640px] max-h-[calc(100%-40px)] max-w-[calc(100vw-6px)] overflow-hidden border border-black/60 bg-[#1f1f1f]/95 text-white shadow-2xl backdrop-blur-xl`}
       onContextMenu={(e) => e.preventDefault()}
     >
       {/* Side rail */}

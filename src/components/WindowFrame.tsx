@@ -8,6 +8,9 @@ import { CloseIcon, MaximizeIcon, MinimizeIcon, RestoreIcon } from './icons'
 
 const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v))
 
+const reducedMotion = () =>
+  window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+
 /**
  * A window: title bar with drag/double-click-maximize, edge+corner
  * resize handles, taskbar-style min/max/close buttons.
@@ -38,7 +41,7 @@ export default function WindowFrame({ win }: { win: WindowState }) {
   // one, like Windows' snap animation.
   useLayoutEffect(() => {
     const el = rootRef.current
-    if (el && prevMax.current !== win.maximized && !win.minimized) {
+    if (el && !reducedMotion() && prevMax.current !== win.maximized && !win.minimized) {
       const f = prevBounds.current
       const t = win.bounds
       el.animate(
@@ -61,6 +64,10 @@ export default function WindowFrame({ win }: { win: WindowState }) {
     const el = rootRef.current
     if (!el || wasMin.current === win.minimized) return
     wasMin.current = win.minimized
+    if (win.minimized && reducedMotion()) {
+      setHidden(true)
+      return
+    }
     if (win.minimized) {
       el.animate(
         [
@@ -71,13 +78,14 @@ export default function WindowFrame({ win }: { win: WindowState }) {
       ).finished.finally(() => setHidden(true))
     } else {
       setHidden(false)
-      el.animate(
-        [
-          { transform: 'translateY(70px) scale(0.72)', opacity: 0 },
-          { transform: 'none', opacity: 1 },
-        ],
-        { duration: 180, easing: 'cubic-bezier(0.2, 0, 0, 1)' },
-      )
+      if (!reducedMotion())
+        el.animate(
+          [
+            { transform: 'translateY(70px) scale(0.72)', opacity: 0 },
+            { transform: 'none', opacity: 1 },
+          ],
+          { duration: 180, easing: 'cubic-bezier(0.2, 0, 0, 1)' },
+        )
     }
   }, [win.minimized])
 
@@ -88,7 +96,7 @@ export default function WindowFrame({ win }: { win: WindowState }) {
     if (win.closeGuard && win.closeGuard() === false) return
     setClosing(true)
     const el = rootRef.current
-    if (!el) return requestClose(win.id)
+    if (!el || reducedMotion()) return requestClose(win.id)
     el.animate(
       [
         { transform: 'none', opacity: 1 },
@@ -192,7 +200,7 @@ export default function WindowFrame({ win }: { win: WindowState }) {
   return (
     <div
       ref={rootRef}
-      className={`anim-win-open absolute flex flex-col bg-white ${
+      className={`anim-win-open absolute flex flex-col bg-white transition-shadow duration-150 ${
         win.maximized ? '' : 'border border-black/30'
       } ${
         active
@@ -211,7 +219,7 @@ export default function WindowFrame({ win }: { win: WindowState }) {
     >
       {/* Title bar */}
       <div
-        className={`flex h-8 shrink-0 select-none items-center pl-2 ${
+        className={`flex h-8 shrink-0 select-none items-center pl-2 transition-colors duration-150 ${
           active ? 'bg-white' : 'bg-[#f0f0f0]'
         }`}
         onPointerDown={onTitlePointerDown}
