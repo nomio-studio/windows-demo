@@ -134,12 +134,6 @@ export const zh: Messages = {
   'cal.dow': '日 一 二 三 四 五 六',
   'cal.noEvents': '今天没有事件',
 
-  /* ---- Update toast ---- */
-  'toast.title': '需要重启',
-  'toast.body': '已在后台安装更新。重启以完成应用。',
-  'toast.restart': '立即重启',
-  'toast.later': '暂不执行',
-
   /* ---- App titles ---- */
   'app.explorer': '文件',
   'app.edge': 'Microsoft Edge',

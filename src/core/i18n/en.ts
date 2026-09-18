@@ -136,13 +136,6 @@ export const en = {
   'cal.dow': 'Su Mo Tu We Th Fr Sa',
   'cal.noEvents': 'No events today',
 
-  /* ---- Update toast ---- */
-  'toast.title': 'Restart required',
-  'toast.body':
-    'An update was installed in the background. Restart to finish applying it.',
-  'toast.restart': 'Restart now',
-  'toast.later': 'Not now',
-
   /* ---- App titles ---- */
   'app.explorer': 'Files',
   'app.edge': 'Microsoft Edge',

@@ -21,7 +21,6 @@ import SearchFlyout from './SearchFlyout'
 import StartMenu from './StartMenu'
 import Taskbar from './Taskbar'
 import TrayFlyouts from './TrayFlyouts'
-import UpdateToast from './UpdateToast'
 import Wallpaper from './Wallpaper'
 import WindowFrame from './WindowFrame'
 
@@ -284,7 +283,6 @@ export default function DesktopShell() {
       {flyout === 'calendar' && <CalendarFlyout />}
       {flyout === 'actionCenter' && <ActionCenter />}
       <TrayFlyouts />
-      <UpdateToast />
 
       {/* Click-away layer while a flyout is open */}
       {flyout && (
