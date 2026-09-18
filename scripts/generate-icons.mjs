@@ -7,16 +7,16 @@ import { fileURLToPath } from 'node:url'
 
 const outDir = path.join(path.dirname(fileURLToPath(import.meta.url)), '../public')
 
-// Windows 10 logo: four perspective quads in a 15×16 box (same geometry
-// as the favicon in index.html).
+// Windows logo: four perspective quads in a 448×512 box — the standard
+// brand geometry (same path as WindowsLogo in src/components/icons.tsx).
 const QUADS = [
-  [[0, 2.2], [6.5, 1.3], [6.5, 7.3], [0, 8.2]],
-  [[7.5, 1.1], [15, 0], [15, 7.5], [7.5, 8.6]],
-  [[0, 8.9], [6.5, 8.9], [6.5, 15], [0, 14.1]],
-  [[7.5, 9], [15, 9], [15, 16], [7.5, 15.1]],
+  [[0, 93.7], [183.6, 68.4], [183.6, 245.8], [0, 245.8]],
+  [[203.8, 65.7], [448, 32], [448, 245.8], [203.8, 245.8]],
+  [[0, 418.3], [183.6, 443.6], [183.6, 268.4], [0, 268.4]],
+  [[203.8, 446.3], [448, 480], [448, 268.4], [203.8, 268.4]],
 ]
-const LOGO_W = 15
-const LOGO_H = 16
+const LOGO_W = 448
+const LOGO_H = 512
 
 // ---------------------------------------------------------------- PNG encode
 const CRC_TABLE = (() => {
@@ -114,8 +114,9 @@ const render = (size, logoFraction, fg, bg) => {
 }
 
 // ------------------------------------------------------------------ outputs
-// Minimalist palette: black logo on a white background.
-const INK = [0, 0, 0]
+// Windows palette: blue logo on white for favicons; white logo on the
+// Windows-blue tile for app icons (like a real Win10 start tile).
+const BLUE = [0, 120, 215] // #0078D7
 const PAPER = [255, 255, 255]
 
 const write = (rel, buf) => {
@@ -126,25 +127,25 @@ const write = (rel, buf) => {
 }
 
 // Vector source of truth (SVG manifest icon + browser favicon):
-// black logo centred on a white square with generous padding.
+// blue logo centred on a white square with generous padding.
 write(
   'icon.svg',
   Buffer.from(
-    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><rect width="20" height="20" fill="#fff"/><path fill="#000" transform="translate(2.5 2)" d="M0 2.2 6.5 1.3v6H0zM7.5 1.1 15 0v7.5H7.5zM0 8.9h6.5V15L0 14.1zM7.5 9H15v7l-7.5-1z"/></svg>`,
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" fill="#fff"/><path fill="#0078D7" transform="translate(76.8 51.2) scale(0.8)" d="M0 93.7l183.6-25.3v177.4H0V93.7zm0 324.6l183.6 25.3V268.4H0v149.9zm203.8 28L448 480V268.4H203.8v177.9zm0-380.6v180.1H448V32L203.8 65.7z"/></svg>`,
   ),
 )
 
 const jobs = [
-  // Any-purpose: install icon, taskbar, app switcher.
-  ['icons/icon-192.png', 192, 0.72, INK, PAPER],
-  ['icons/icon-512.png', 512, 0.72, INK, PAPER],
-  // Maskable: full-bleed white, logo inside the 80% safe zone.
-  ['icons/maskable-192.png', 192, 0.48, INK, PAPER],
-  ['icons/maskable-512.png', 512, 0.48, INK, PAPER],
+  // Any-purpose: install icon, taskbar, app switcher — tile style.
+  ['icons/icon-192.png', 192, 0.6, PAPER, BLUE],
+  ['icons/icon-512.png', 512, 0.6, PAPER, BLUE],
+  // Maskable: full-bleed blue, logo inside the 80% safe zone.
+  ['icons/maskable-192.png', 192, 0.44, PAPER, BLUE],
+  ['icons/maskable-512.png', 512, 0.44, PAPER, BLUE],
   // iOS requires an opaque touch icon.
-  ['apple-touch-icon.png', 180, 0.62, INK, PAPER],
+  ['apple-touch-icon.png', 180, 0.56, PAPER, BLUE],
   // PNG favicon fallback for older browsers.
-  ['favicon-32x32.png', 32, 0.78, INK, PAPER],
+  ['favicon-32x32.png', 32, 0.78, BLUE, PAPER],
 ]
 
 for (const [rel, size, frac, fg, bg] of jobs) {
