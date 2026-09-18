@@ -109,9 +109,10 @@ const F =
 
 /* ---- Brand marks (hand-drawn, Fluent-flat style) ---- */
 
+/** The authentic Windows logo quad — standard brand geometry. */
 export const WindowsLogo: IconType = ({ className }) => (
-  <svg viewBox="0 0 15 15" className={className} fill="currentColor">
-    <path d="M0 2.2 6.5 1.3v6.1H0zM7.5 1.1 15 0v8.3H7.5zM0 8.9h6.5V15L0 14.1zM7.5 9H15v7l-7.5-1z" />
+  <svg viewBox="0 0 448 512" className={className} fill="currentColor">
+    <path d="M0 93.7l183.6-25.3v177.4H0V93.7zm0 324.6l183.6 25.3V268.4H0v149.9zm203.8 28L448 480V268.4H203.8v177.9zm0-380.6v180.1H448V32L203.8 65.7z" />
   </svg>
 )
 
