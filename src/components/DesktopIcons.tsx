@@ -9,9 +9,9 @@ import { useSystemStore } from '../core/store/system'
 import { RecycleBinFullIcon } from './icons'
 
 const SIZES = {
-  small: { box: 'w-[62px] py-0.5', icon: 'size-5', text: 'text-[10px]' },
-  medium: { box: 'w-[74px] py-1', icon: 'size-7', text: 'text-[11px]' },
-  large: { box: 'w-[86px] py-1.5', icon: 'size-10', text: 'text-[11px]' },
+  small: { box: 'w-[68px] py-0.5', icon: 'size-8', text: 'text-[10px]' },
+  medium: { box: 'w-[80px] py-1', icon: 'size-12', text: 'text-[11px]' },
+  large: { box: 'w-[96px] py-1.5', icon: 'size-16', text: 'text-xs' },
 } as const
 
 export interface IconActions {
@@ -113,7 +113,9 @@ export default function DesktopIcons({ onMenu }: Props) {
             onMenu(e, d, { startRename: setRenaming })
           }}
         >
-          <d.icon className={`${sz.icon} shrink-0`} />
+          <d.icon
+            className={`${sz.icon} shrink-0 [filter:drop-shadow(0_1.5px_2px_rgba(0,0,0,0.35))]`}
+          />
           {renaming === d.id && d.fs ? (
             <input
               autoFocus

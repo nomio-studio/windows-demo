@@ -216,36 +216,44 @@ export const StickyNoteIcon: IconType = F(Sticker24Filled, '#FFD54F')
 
 const useUid = () => useId().replace(/[^a-zA-Z0-9]/g, '')
 
-/** Yellow folder: tabbed back panel, paper sheet, bright front flap. */
+/** Yellow folder: tabbed back, dark opening, soft-lit front flap. */
 export const FolderIcon: IconType = ({ className }) => {
   const id = useUid()
   return (
     <svg viewBox="0 0 48 48" className={className}>
       <defs>
         <linearGradient id={`${id}b`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#E5A521" />
-          <stop offset="1" stopColor="#C98A0E" />
+          <stop offset="0" stopColor="#E8A824" />
+          <stop offset="1" stopColor="#C07F0A" />
         </linearGradient>
         <linearGradient id={`${id}f`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#FFD868" />
-          <stop offset="1" stopColor="#F0A725" />
+          <stop offset="0" stopColor="#FFD65C" />
+          <stop offset="1" stopColor="#EF9F1B" />
         </linearGradient>
+        <linearGradient id={`${id}sh`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#8A5A00" stopOpacity=".3" />
+          <stop offset="1" stopColor="#8A5A00" stopOpacity="0" />
+        </linearGradient>
+        <radialGradient id={`${id}hl`} cx=".3" cy=".2" r=".9">
+          <stop offset="0" stopColor="#FFF" stopOpacity=".22" />
+          <stop offset=".6" stopColor="#FFF" stopOpacity="0" />
+        </radialGradient>
       </defs>
       <path
-        d="M9 16a2 2 0 0 1 2-2h7.5l3 3H39a2 2 0 0 1 2 2v5.5H9z"
+        d="M9 14.5a2 2 0 0 1 2-2h6.5l3 3H39a2 2 0 0 1 2 2v4.5H9z"
         fill={`url(#${id}b)`}
       />
+      <path d="M11 18.2h26v2.6h-26z" fill="#2E2208" opacity=".55" />
       <path
-        d="M11 18.5h26v6h-26z"
-        fill="#EDF3FA"
-        stroke="#C7D2E0"
-        strokeWidth=".6"
-      />
-      <path
-        d="M7.5 22h33l2.6 18a2 2 0 0 1-1.9 2H6.8a2 2 0 0 1-1.9-2z"
+        d="M6.5 20.5h35l1.7 16.5a2 2 0 0 1-1.9 2H6.7a2 2 0 0 1-1.9-2z"
         fill={`url(#${id}f)`}
       />
-      <path d="M7.5 22h33" stroke="#E8960F" strokeWidth=".7" fill="none" />
+      <path
+        d="M6.5 20.5h35l1.7 16.5a2 2 0 0 1-1.9 2H6.7a2 2 0 0 1-1.9-2z"
+        fill={`url(#${id}hl)`}
+      />
+      <path d="M6.5 20.5h35l.4 3.4H6.9z" fill={`url(#${id}sh)`} />
+      <path d="M6.5 20.5h35" stroke="#FBD25C" strokeWidth=".9" fill="none" />
     </svg>
   )
 }
@@ -330,23 +338,57 @@ const BinSvg = ({
 export const RecycleBinIcon: IconType = (p) => <BinSvg {...p} />
 export const RecycleBinFullIcon: IconType = (p) => <BinSvg {...p} full />
 
-/** Drive: brushed-metal slab, blue capacity bar, green LED. */
+/** Drive: metal enclosure, light top face, slot + blue bar, LED. */
 export const DriveIcon: IconType = ({ className }) => {
   const id = useUid()
   return (
     <svg viewBox="0 0 48 48" className={className}>
       <defs>
+        <linearGradient id={`${id}t`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#EDF1F6" />
+          <stop offset="1" stopColor="#C6CFDB" />
+        </linearGradient>
         <linearGradient id={`${id}c`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#DDE4EC" />
-          <stop offset="1" stopColor="#97A3B3" />
+          <stop offset="0" stopColor="#D0D8E2" />
+          <stop offset="1" stopColor="#8996A7" />
+        </linearGradient>
+        <linearGradient id={`${id}s`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#8B98A9" />
+          <stop offset="1" stopColor="#6E7B8C" />
         </linearGradient>
       </defs>
-      <rect x="6" y="14" width="36" height="21" rx="3" fill={`url(#${id}c)`} />
-      <path d="M6 17.5h36" stroke="#FFF" strokeWidth=".8" opacity=".6" />
-      <rect x="8.8" y="17" width="30.4" height="15" rx="1.5" fill="#B7C1CE" />
-      <rect x="10.8" y="19" width="26.4" height="11" rx="1" fill="#CCD4DE" />
-      <rect x="12.5" y="27.6" width="18" height="1.8" rx=".9" fill="#3FA0E8" />
-      <circle cx="34.8" cy="28.5" r="1.4" fill="#63D374" />
+      <path
+        d="M9 14.5a3 3 0 0 1 3-3h24a3 3 0 0 1 3 3v3H9z"
+        fill={`url(#${id}t)`}
+      />
+      <path
+        d="M9 14.5a3 3 0 0 1 3-3h24a3 3 0 0 1 3 3"
+        fill="none"
+        stroke="#F7FAFD"
+        strokeWidth=".8"
+        opacity=".7"
+      />
+      <rect x="9" y="17.5" width="30" height="16.5" rx="1.5" fill={`url(#${id}c)`} />
+      <rect
+        x="9"
+        y="17.5"
+        width="30"
+        height="16.5"
+        rx="1.5"
+        fill="none"
+        stroke="#7A8697"
+        strokeWidth=".6"
+        opacity=".5"
+      />
+      <rect x="11" y="27.8" width="19" height="3" rx="1" fill={`url(#${id}s)`} />
+      <rect x="11.8" y="28.6" width="17.4" height="1.4" rx=".7" fill="#3FA0E8" />
+      <circle cx="34.5" cy="29.3" r="1.6" fill="#4E5B6B" />
+      <circle cx="34.5" cy="29.3" r="1" fill="#63D374" />
+      <path
+        d="M9 32.5a1.5 1.5 0 0 0 1.5 1.5h27a1.5 1.5 0 0 0 1.5-1.5z"
+        fill="#5D6A7A"
+        opacity=".6"
+      />
     </svg>
   )
 }
